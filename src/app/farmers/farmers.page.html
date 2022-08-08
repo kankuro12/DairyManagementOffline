@@ -1,0 +1,16 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      Farmers
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Farmers</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <app-farmer-list #farmerlist [farmers]="farmerList"></app-farmer-list>
+</ion-content>

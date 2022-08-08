@@ -1,0 +1,7 @@
+{
+  "name": "DairyManagement",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
