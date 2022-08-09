@@ -9,7 +9,5 @@ import { Component, Input, OnInit } from '@angular/core';
 export class FarmerListComponent implements OnInit {
   @Input() farmers: Farmer[];
   constructor() { }
-
   ngOnInit() {}
-
 }

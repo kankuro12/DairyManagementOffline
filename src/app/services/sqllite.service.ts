@@ -54,6 +54,8 @@ export class SqlliteService {
 
       this.run(sql, params)
         .then((result) => {
+          console.log(result);
+
           const datas: T[] = [];
           for (let index = 0; index < result.rows.length; index++) {
             try {
@@ -66,6 +68,8 @@ export class SqlliteService {
           resolve(datas);
         })
         .catch((err) => {
+          console.error(err);
+
           reject(err);
         });
     });

@@ -1,11 +1,13 @@
+/* eslint-disable @typescript-eslint/no-shadow */
+import { resolve } from 'dns';
 import { SqlliteService } from './../../services/sqllite.service';
 
 export class Modal {
   table;
-  primary='id';
+  primary = 'id';
   columns: string[];
   constructor() { }
-  static all(){
+  static all() {
 
   }
   init(columns = {}) {
@@ -16,10 +18,17 @@ export class Modal {
     }
   }
 
+  propertyList() {
+    const list = [];
+    this.columns.forEach(column => {
+      list.push([column, this[column]]);
+    });
+  }
+
 
 
   save() {
-    return new Promise((resolve,reject)=>{
+    return new Promise((resolve, reject) => {
 
       const params = [];
       const values = [];
@@ -36,45 +45,53 @@ export class Modal {
         }
       });
 
-      if(params.length>0){
-        const paramsSTR="("+params.join(",")+")";
-        const argSTR="("+params.map(o=>'?').join(",")+")";
+      if (params.length > 0) {
+        const paramsSTR = "(" + params.join(",") + ")";
+        const argSTR = "(" + params.map(o => '?').join(",") + ")";
 
-        const query=`INSERT OR REPLACE INTO ${this.table} ${paramsSTR} VALUES ${argSTR}`;
+        const query = `INSERT OR REPLACE INTO ${this.table} ${paramsSTR} VALUES ${argSTR}`;
         console.log(query);
 
-        SqlliteService.current.run(query,values)
-        .then((res)=>{
-          console.log(res);
-          if(res.insertId){
-            this[this.primary]=res.insertId;
-          }
-          console.log(this);
-          resolve(this);
-        })
-        .catch((err)=>{
-          console.log(err);
-          reject(err);
-        }) ;
+        SqlliteService.current.run(query, values)
+          .then((res) => {
+            console.log(res);
+            if (res.insertId) {
+              this[this.primary] = res.insertId;
+            }
+            console.log(this);
+            resolve(this);
+          })
+          .catch((err) => {
+            console.log(err);
+            reject(err);
+          });
 
       }
     });
   }
 
-  delete(){
-      const localid=this[this.primary];
+  del() {
+    return new Promise((resolve, reject) => {
+
+      const localid = this[this.primary];
       console.log(localid);
 
-      if(localid!==undefined){
-        SqlliteService.current.run(`delete from ${this.table} where ${this.primary}=${localid}`,[])
-        .then((res)=>{
-          console.log(res);
-
-        })
-        .catch((err)=>{
-          console.log(err);
-
-        });
+      if (localid !== undefined) {
+        SqlliteService.current.run(`delete from ${this.table} where ${this.primary}=${localid}`, [])
+          .then((res) => {
+            console.log(res);
+            resolve({status:true});
+          })
+          .catch((err) => {
+            console.log(err);
+            resolve({
+              status:false,
+              err
+            });
+          });
+      }else{
+        resolve(true);
       }
+    });
   }
 }

@@ -8,7 +8,6 @@ export class Farmer extends Modal {
   name?: string;
   center_id?: number;
   type = 1;
-  loaded=false;
 
   table="farmers";
   columns=['id','no','name','type','center_id'];

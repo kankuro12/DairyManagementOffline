@@ -1,0 +1,98 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-back-button slot="start"></ion-back-button>
+    <ion-title>
+      Centers
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button color="primary" (click)="initAdd()">Add New</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <!-- <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Centerss</ion-title>
+    </ion-toolbar>
+  </ion-header> -->
+  <div class="p-3">
+
+    <div class="row" *ngIf="mode!==0 && center!==undefined" [ngClass]="{'readonly': working}">
+      <div class="col-md-3">
+        <input type="text" class="form-control" placeholder="Enter center name" [(ngModel)]="center.name">
+      </div>
+      <div class="col-md-3 col-6">
+        <input type="number" class="form-control" placeholder="Enter fat rate" [(ngModel)]="center.fat_rate">
+      </div>
+      <div class="col-md-3 col-6">
+        <input type="number" class="form-control" placeholder="Enter snf rate" [(ngModel)]="center.snf_rate">
+      </div>
+      <div class="col-md-3 col-6">
+        <input type="number" class="form-control" placeholder="Enter CC rate" [(ngModel)]="center.cc">
+      </div>
+      <div class="col-md-3 col-6">
+        <input type="number" class="form-control" placeholder="Enter TS rate" [(ngModel)]="center.tc">
+      </div>
+      <div class="col-md-3 col-6">
+        <button class="btn btn-success w-100" (click)="save()">Save</button>
+
+      </div>
+      <div class="col-md-3 col-6">
+        <button class="btn btn-danger w-100" (click)="mode=0">Cancel</button>
+
+      </div>
+    </div>
+    <div *ngIf="mode===0" [ngClass]="{'readonly': working}">
+      <div class="shadow mb-3" *ngFor="let center of centers" >
+        <div class="row m-0">
+          <div class="col-md-6">
+              <strong>
+                Name
+              </strong>
+              <div>
+                {{center.name}}
+              </div>
+          </div>
+          <div class="col-md-3 col-6">
+            <strong>
+              Fat Rate
+            </strong>
+            <div>
+              {{center.fat_rate??'--'}}
+            </div>
+          </div>
+          <div class="col-md-3 col-6">
+            <strong>
+              SNF Rate
+            </strong>
+            <div>
+              {{center.snf_rate??'--'}}
+            </div>
+          </div>
+          <div class="col-md-3 col-6">
+            <strong>
+              CC Charge
+            </strong>
+            <div>
+              {{center.cc??'--'}}
+            </div>
+          </div>
+          <div class="col-md-3 col-6">
+            <strong>
+              TS Charge
+            </strong>
+            <div>
+              {{center.tc??'--'}}
+            </div>
+          </div>
+        </div>
+        <hr class="mb-1">
+        <div class="d-flex justify-content-between p-2">
+            <button class="btn btn-success" (click)="initEdit(center)">Edit</button>
+            <button class="btn btn-danger" (click)="initDelete(center)">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>
