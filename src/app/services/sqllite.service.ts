@@ -75,4 +75,30 @@ export class SqlliteService {
     });
 
   }
+  selectLoose( sql: string, params?: any[]): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+
+      this.run(sql, params)
+        .then((result) => {
+          console.log(result);
+
+          const datas: any[] = [];
+          for (let index = 0; index < result.rows.length; index++) {
+            try {
+              const localData = result.rows.item(index);
+              datas.push(localData);
+            } catch (error) {
+              console.error(error);
+            }
+          }
+          resolve(datas);
+        })
+        .catch((err) => {
+          console.error(err);
+
+          reject(err);
+        });
+    });
+
+  }
 }

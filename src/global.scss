@@ -29,3 +29,17 @@
 div.readonly{
   pointer-events: none;
 }
+
+.no-border-radius{
+  border-radius:0 !important;
+}
+.no-outline{
+  &.form-control{
+    box-shadow: none !important;
+  }
+  &.btn{
+    box-shadow: none !important;
+
+  }
+  outline: transparent;
+}

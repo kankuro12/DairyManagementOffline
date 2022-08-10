@@ -26,5 +26,18 @@ export default [
     cc DECIMAL(8,2),
     tc DECIMAL(8,2)
   );
+  `,
   `
+  create table milkdatas(
+    id INTEGER PRIMARY KEY,
+    date int,
+    m_amount decimal(10,3),
+    e_amount decimal(10,3),
+    user_id integer,
+    center_id integer,
+    FOREIGN KEY(user_id) REFERENCES farmers(id),
+    FOREIGN KEY(center_id) REFERENCES centers(id)
+  );
+  `
+
 ];
