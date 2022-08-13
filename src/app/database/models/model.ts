@@ -28,7 +28,7 @@ export class Modal {
 
 
   save() {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject)=> {
 
       const params = [];
       const values = [];
@@ -65,6 +65,8 @@ export class Modal {
             console.log(err);
             reject(err);
           });
+
+      }else{
 
       }
     });

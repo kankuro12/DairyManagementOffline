@@ -38,6 +38,15 @@ export default [
     FOREIGN KEY(user_id) REFERENCES farmers(id),
     FOREIGN KEY(center_id) REFERENCES centers(id)
   );
+  `,
   `
+  create table advances(
+    id INTEGER PRIMARY KEY,
+    date int,
+    title text,
+    amount decimal(10,2),
+    user_id integer,
+    FOREIGN KEY(user_id) REFERENCES farmers(id)
+  );`
 
 ];

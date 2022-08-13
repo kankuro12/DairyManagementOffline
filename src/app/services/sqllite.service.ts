@@ -75,6 +75,22 @@ export class SqlliteService {
     });
 
   }
+  selectONE<T extends Modal>(type: (new (data: any) => T), sql: string, params?: any[]): Promise<T> {
+    return new Promise((resolve, reject) => {
+
+      this.run(sql, params)
+        .then((result) => {
+          console.log(result);
+          const localData = new type(result.rows.item(0));
+          resolve(localData);
+        })
+        .catch((err) => {
+          console.error(err);
+          reject(err);
+        });
+    });
+
+  }
   selectLoose( sql: string, params?: any[]): Promise<any[]> {
     return new Promise((resolve, reject) => {
 

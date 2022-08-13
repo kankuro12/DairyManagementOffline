@@ -1,0 +1,125 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>advancetab</ion-title>
+    <ion-buttons slot="end">
+      <ion-button color="danger" *ngIf="loaded" (click)="loaded=false">Reset</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="p-3">
+    <div [ngClass]="{'d-none': loaded}">
+      <div class="row m-0">
+        <div class="col-md-3 col-6" *ngIf="centers.length>1">
+          <strong>Center</strong>
+          <select class="form-control">
+            <option *ngFor="let lc of centers" [ngValue]="lc.id">{{lc.name}}</option>
+          </select>
+        </div>
+        <div class="col-md-3 col-6" *ngIf="centers.length===1">
+          <strong>
+            center
+          </strong>
+          <div>
+            {{center.name}}
+          </div>
+        </div>
+        <div class="col-md-3 col-6">
+          <strong>
+            Date
+          </strong>
+          <div>
+            <input type="text" [(ngModel)]="date" class="form-control">
+          </div>
+        </div>
+
+        <div class="col-md-3 col-6 pt-4">
+
+          <button class="btn btn-success w-100" *ngIf="!loaded" (click)="loadData()">Load</button>
+        </div>
+
+      </div>
+    </div>
+    <div *ngIf="loaded">
+
+      <hr>
+      <div class="d-flex ">
+        <div style="flex:2;">
+          <input type="number" #noinput placeholder="Farmer No" class="form-control no-border-radius no-outline"
+            [(ngModel)]="no">
+        </div>
+        <div style="flex:2;">
+          <input type="number" #amountinput placeholder="Advance Amount" class="form-control no-border-radius no-outline"
+            (keypress)="check($event)" [(ngModel)]="amount">
+        </div>
+        <div style="flex:1;">
+          <button class="btn btn-success no-border-radius no-outline" (click)="save()">Save</button>
+        </div>
+      </div>
+      <hr>
+      <!-- <div class="shadow mb-3 p-3" *ngFor="let milkData of milkDatas">
+        <div>
+          <strong>Farmer</strong> : {{milkData.name}} - {{milkData.no}}
+        </div>
+        <div class="row ">
+          <div class="col-6">
+            <strong>Morning</strong> : {{milkData.m_amount}} L
+          </div>
+          <div class="col-6">
+            <strong>Evening</strong> : {{milkData.e_amount}} L
+          </div>
+        </div>
+      </div> -->
+      <table class="table">
+        <tr>
+          <th>
+            No
+          </th>
+          <th>
+            Name
+          </th>
+          <th>
+            Amount
+          </th>
+
+        </tr>
+
+      </table>
+      <hr>
+
+    </div>
+  </div>
+
+  <ion-modal [isOpen]="isModalOpen">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Modal</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="isModalOpen=false">Close</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <div class="row">
+          <div class="col-12">
+            <strong>Farmer No: </strong> {{no}}
+          </div>
+          <div class="col-12">
+            <input type="text" placeholder="Farmer Name" [(ngModel)]="fname" class="form-control">
+          </div>
+          <div class="col-6 py-2" *ngFor="let rate of rates">
+            <input type="radio" [(ngModel)]="rate_id" [value]="rate.id">{{rate.name}}
+          </div>
+          <div class="col-6">
+            <button class="btn btn-success w-100" (click)="saveFarmer()" *ngIf="!farmerSaving">Save</button>
+            <ion-spinner name="dots" *ngIf="farmerSaving"></ion-spinner>
+
+          </div>
+        </div>
+
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>

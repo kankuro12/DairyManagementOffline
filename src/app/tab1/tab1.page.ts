@@ -9,5 +9,13 @@ import { SqlliteService } from '../services/sqllite.service';
 export class Tab1Page {
 
   constructor(private db: SqlliteService) {}
-
+  del(){
+    this.db.run('delete from milkdatas where id>0')
+    .then((res)=>{
+      console.log(res);
+    })
+    .catch((err)=>{
+      console.log(err);
+    });
+  }
 }

@@ -16,6 +16,10 @@ const routes: Routes = [
         loadChildren: () => import('../tab2/tab2.module').then(m => m.Tab2PageModule)
       },
       {
+        path: 'advance',
+        loadChildren: () => import('../advancetab/advancetab.module').then(m => m.AdvancetabPageModule)
+      },
+      {
         path: 'farmers',
         loadChildren: () => import('../farmers/farmers.module').then(m => m.FarmersModule)
       },
