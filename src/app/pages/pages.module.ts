@@ -1,3 +1,5 @@
+import { SingleMilkComponentComponent } from './farmer/detail/single-milk-component/single-milk-component.component';
+import { DetailPage } from './farmer/detail/detail.page';
 import { RatesComponent } from './rates/rates.component';
 import { CentersComponent } from './centers/centers.component';
 import { IonicModule } from '@ionic/angular';
@@ -8,7 +10,7 @@ import { PagesRoutingModule } from './pages.routing.module';
 
 
 @NgModule({
-  declarations: [CentersComponent,RatesComponent],
+  declarations: [CentersComponent,RatesComponent,DetailPage,SingleMilkComponentComponent],
   imports: [
     CommonModule,
     IonicModule,

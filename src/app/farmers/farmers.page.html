@@ -3,6 +3,11 @@
     <ion-title>
       Farmers
     </ion-title>
+    <ion-buttons slot="end">
+      <ion-button color="danger" (click)="loadData()">
+        R
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -12,5 +17,10 @@
       <ion-title size="large">Farmers</ion-title>
     </ion-toolbar>
   </ion-header>
-  <app-farmer-list #farmerlist [farmers]="farmerList"></app-farmer-list>
+  <div class="p-2">
+    <select class="form-control" [(ngModel)]="center_id" (change)="centerChanged($event)">
+      <option *ngFor="let center of centers" [value]="center.id">{{center.name}}</option>
+    </select>
+  </div>
+  <app-farmer-list #farmerlist [farmers]="filterdList"></app-farmer-list>
 </ion-content>

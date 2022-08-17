@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 import { AlertController } from '@ionic/angular';
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable @typescript-eslint/prefer-for-of */
@@ -292,10 +293,17 @@ export class Tab2Page implements OnInit {
   updateMilkData(milkData: MilkData){
     milkData.save()
     .then((m: MilkData)=>{
-      const index=this.milkDatas.indexOf(o => o.user_id === this.farmer.id && o.date === this.curDate);
       const mappedData=this.getMappedData(m);
-      this.milkDatas.splice(index,1,mappedData);
+      console.log(mappedData);
+      // const localMilkDatas=[...this.milkDatas];
+      // const index=localMilkDatas.findIndex(o => o.user_id == this.farmer.id && o.date == this.curDate);
+      const index=this.milkDatas.findIndex(o => o.user_id == this.farmer.id && o.date == this.curDate);
+      // console.log(index);
+      // localMilkDatas[index]=mappedData;
+      // this.milkDatas=localMilkDatas;
+      this.milkDatas[index]=mappedData;
       this.finishedSaving();
+
     }).catch((err)=>{
       console.log(err);
 

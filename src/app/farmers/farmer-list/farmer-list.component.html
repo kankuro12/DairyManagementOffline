@@ -1,3 +1,41 @@
-<div *ngFor="let farmer of farmers">
-  {{farmer.no}}
+<!--
+<div class="row">
+  <div class="col-md-4 col-lg-3">
+    <div class="shadow row py-2 mx-0 mb-2" *ngFor="let farmer of farmers">
+      <div class="col-2">
+        {{farmer.no}}
+      </div>
+      <div class="col-6">
+        {{farmer.name}}
+      </div>
+    </div>
+  </div>
+
+</div> -->
+<div class="p-3">
+
+  <table class="table">
+    <tr>
+      <th>
+        No
+      </th>
+      <th>
+        Name
+      </th>
+      <th>
+
+      </th>
+    </tr>
+    <tr *ngFor="let farmer of farmers" [routerLink]="['/pages/farmer-detail/'+farmer.id]">
+        <td>
+          {{farmer.no}}
+        </td>
+        <td>
+          {{farmer.name}}
+        </td>
+        <td>
+
+        </td>
+    </tr>
+  </table>
 </div>

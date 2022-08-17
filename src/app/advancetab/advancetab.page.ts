@@ -1,3 +1,4 @@
+import { AlertController } from '@ionic/angular';
 import { Advance } from './../database/models/advance.modal';
 import { Rate } from 'src/app/database/models/rate.modal';
 import { ElementRef } from '@angular/core';
@@ -38,10 +39,13 @@ export class AdvancetabPage implements OnInit {
   rate_id: number;
   isModalOpen=false;
   farmerSaving=false;
+  //sum
+  totalAdvance=0;
+
+  initiated=false;
 
 
-
-  constructor(private db: SqlliteService) { }
+  constructor(private db: SqlliteService,private alertController: AlertController) { }
 
   async ngOnInit() {
     const d4 = new NepaliDate(new Date());
@@ -57,6 +61,13 @@ export class AdvancetabPage implements OnInit {
       this.rate = this.rates[0];
       this.rate_id = this.rate.id;
     }
+    this.initiated=true;
+  }
+
+  calculateTotalAdvance(){
+    let tempTotal=0;
+    this.advances.forEach((advance)=>{tempTotal+=advance.amount;});
+    this.totalAdvance=tempTotal;
   }
 
   loadData(){
@@ -72,6 +83,7 @@ export class AdvancetabPage implements OnInit {
       .then((data)=>{
         this.advances=data;
         this.loaded=true;
+        this.calculateTotalAdvance();
       })
       .catch((err)=>{
 
@@ -142,8 +154,43 @@ export class AdvancetabPage implements OnInit {
       this.advances.push({
         ...adv,no:this.farmer.no,name:this.farmer.name
       });
+      this.calculateTotalAdvance();
     });
   }
+
+  initDelete(data: any){
+    this.alertController.create({
+      message:`Do you want delete advance for ${data.name}`,
+      buttons:[
+        {
+          text:"yes",
+          role:"success",
+          handler:()=>{
+            this.del(data.id);
+          }
+        },
+        {
+          text:"No",
+          cssClass:"text-danger",
+          role:"cancel"
+        }
+      ]
+    }).then((alert)=>alert.present());
+
+  }
+  del(id){
+    this.db.run("delete from advances where id=?",[id])
+    .then((res)=>{
+      const index=this.advances.findIndex(o=>o.id===id);
+      if(id>-1){
+        this.advances.splice(index,1);
+        this.calculateTotalAdvance();
+      }
+    })
+    .catch((err)=>{
+
+    });
+  };
   isNumber(num) {
     return num !== undefined && num !== null && !isNaN(num);
   }

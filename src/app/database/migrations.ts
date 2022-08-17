@@ -1,16 +1,16 @@
 export default [
   `
-  CREATE TABLE farmers(
+  CREATE TABLE IF NOT EXISTS farmers(
     id INTEGER PRIMARY KEY,
     no INTEGER unique,
     name TEXT,
-    type INTEGER
+    type INTEGER,
+    center_id INTEGER
   );
 
   `,
-  `alter table farmers add center_id INTEGER `,
   `
-  create table rates(
+  create table IF NOT EXISTS rates(
     id INTEGER PRIMARY KEY,
     name TEXT,
     rate DECIMAL(8,2)
@@ -18,7 +18,7 @@ export default [
 
   `,
   `
-  create table centers(
+  create table IF NOT EXISTS centers(
     id INTEGER PRIMARY KEY,
     name TEXT,
     snf_rate DECIMAL(8,2),
@@ -28,7 +28,7 @@ export default [
   );
   `,
   `
-  create table milkdatas(
+  create table IF NOT EXISTS milkdatas(
     id INTEGER PRIMARY KEY,
     date int,
     m_amount decimal(10,3),
@@ -40,13 +40,37 @@ export default [
   );
   `,
   `
-  create table advances(
+  create table IF NOT EXISTS advances(
     id INTEGER PRIMARY KEY,
     date int,
     title text,
     amount decimal(10,2),
     user_id integer,
     FOREIGN KEY(user_id) REFERENCES farmers(id)
-  );`
+  );`,
+  //type 2=paid by dairy, 1=paid by farmer
+  `
+  create table IF NOT EXISTS farmerpayments(
+    id INTEGER PRIMARY KEY,
+    date int,
+    title text,
+    amount decimal(10,2),
+    user_id integer,
+    type integer default 1,
+    FOREIGN KEY(user_id) REFERENCES farmers(id)
+  );
+  `,
+  `
+  create table IF NOT EXISTS milkamounts(
+    id INTEGER PRIMARY KEY,
+    session integer,
+    snf decimal(10,2),
+    fat decimal(10,2),
+    rate decimal(10,2),
+    amount decimal(10,2),
+    user_id integer,
+    FOREIGN KEY(user_id) REFERENCES farmers(id)
+  );
+  `
 
 ];

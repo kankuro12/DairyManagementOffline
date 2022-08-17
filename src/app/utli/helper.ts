@@ -34,4 +34,21 @@ export class Helper {
 
     return parseInt(date.split('-').join(""),10);
   }
+  static dateSTR(date: number): string{
+    const year=parseInt((date/10000).toString(),10);
+    date=date%10000;
+    const month=parseInt((date/100).toString(),10);
+    date=date%100;
+
+    return year.toString()+"-"+(month>9?"":"0")+month.toString()+"-"+(date>9?"":"0")+date.toString();
+  }
+
+  static getSessionRange(year: number,month: number,session: number): number[]{
+    return [
+      year*10000+month*100+(session===1?1:16),
+      year*10000+month*100+(session===1?1:32),
+    ];
+  }
+
+
 };
