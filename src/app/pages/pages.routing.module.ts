@@ -1,3 +1,5 @@
+import { SettingComponent } from './setting/setting.component';
+import { SnffatComponent } from './snffat/snffat.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
@@ -19,6 +21,14 @@ const routes: Routes = [
   {
     path: 'farmer-detail/:id',
     component: DetailPage
+  },
+  {
+    path: 'snffat',
+    component: SnffatComponent
+  },
+  {
+    path: 'setting',
+    component: SettingComponent
   }
 ];
 

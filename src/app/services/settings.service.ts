@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Type } from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
@@ -15,4 +15,10 @@ export class SettingsService {
     }
    }
 
+
+   setRateType(type){
+    this.rateType=type;
+    localStorage.setItem('rate_type',this.rateType.toString());
+
+   }
 }

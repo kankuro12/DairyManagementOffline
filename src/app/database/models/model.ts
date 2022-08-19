@@ -23,6 +23,7 @@ export class Modal {
     this.columns.forEach(column => {
       list.push([column, this[column]]);
     });
+
   }
 
 

@@ -46,8 +46,15 @@ export class Helper {
   static getSessionRange(year: number,month: number,session: number): number[]{
     return [
       year*10000+month*100+(session===1?1:16),
-      year*10000+month*100+(session===1?1:32),
+      year*10000+month*100+(session===1?15:32),
     ];
+  }
+
+  static makeIntegerSession(year,month,session){
+    year=(typeof year)== 'number'?year:parseInt(year,10);
+    month=(typeof month)== 'number'?month:parseInt(month,10);
+    session=(typeof session)== 'number'?session:parseInt(session,10);
+    return year*10000+month*100+session;
   }
 
 

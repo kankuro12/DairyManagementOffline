@@ -1,0 +1,109 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>SNF FAT</ion-title>
+    <ion-buttons slot="end">
+      <ion-button color="danger" *ngIf="loaded" (click)="loaded=false">Reset</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="initiated">
+  <div class="p-3">
+    <div [ngClass]="{'d-none': loaded}">
+      <div class="row m-0">
+        <div class="col-md-3 col-6" *ngIf="centers.length>1">
+          <strong>Center</strong>
+          <select class="form-control">
+            <option *ngFor="let lc of centers" [ngValue]="lc.id">{{lc.name}}</option>
+          </select>
+        </div>
+        <div class="col-md-3 col-6" *ngIf="centers.length===1">
+          <strong>
+            center
+          </strong>
+          <div>
+            {{center.name}}
+          </div>
+        </div>
+        <div class="col-md-3 col-6">
+          <strong>
+            Date
+          </strong>
+          <div>
+            <input type="text" [(ngModel)]="date" class="form-control">
+          </div>
+        </div>
+
+        <div class="col-md-3 col-6 pt-4">
+
+          <button class="btn btn-success w-100" *ngIf="!loaded" (click)="loadData()">Load</button>
+        </div>
+
+      </div>
+    </div>
+    <div *ngIf="loaded">
+      <div class="d-flex justify-content-between">
+        <span>
+          {{center.name}}
+        </span>
+        <span>
+          {{date}}
+        </span>
+      </div>
+      <hr>
+      <div>
+        <div class="row m-0">
+          <div class="col-4 p-0"><input class="form-control no-border-radius" placeholder="Farmer No" #noInput [(ngModel)]="no" type="number" ></div>
+          <div class="col-4 p-0"><input class="form-control no-border-radius" placeholder="FAT" #fatInput [(ngModel)]="fat" type="number" ></div>
+          <div class="col-4 p-0"><input class="form-control no-border-radius" placeholder="SNF" #snfInput [(ngModel)]="snf" type="number" (keypress)="check($event,1)" ></div>
+          <div class="col-12 px-0 pt-2"><button class="btn btn-success w-100" (click)="saveData()">Save Data</button></div>
+        </div>
+      </div>
+      <hr>
+      <table class="table">
+        <tr>
+          <th>
+            No
+          </th>
+          <th>
+            Name
+          </th>
+          <th>
+            Fat
+          </th>
+          <th>
+            Snf
+          </th>
+        </tr>
+        <tr *ngFor="let snffat of snffats" (dblclick)="initAction(snffat.id)">
+          <td>{{snffat.no}}</td>
+          <td>{{snffat.name}}</td>
+          <td>{{snffat.fat}}</td>
+          <td>{{snffat.snf}}</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  <ion-modal [isOpen]="isEditing">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Edit FatSnf</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="isEditing=false">Close</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <div class="row">
+          <div class="col-6 p-0"> <strong>FAT</strong> </div>
+          <div class="col-6 p-0"> <strong>SNF</strong> </div>
+          <div class="col-6 p-0"><input class="form-control no-border-radius" placeholder="FAT" #fatInput [(ngModel)]="efat" type="number" ></div>
+          <div class="col-6 p-0"><input class="form-control no-border-radius" placeholder="SNF" #snfInput [(ngModel)]="esnf" type="number" (keypress)="check($event,2)" ></div>
+          <div class="col-12 px-0 pt-2"><button class="btn btn-success w-100" (click)="updateData()">Save Data</button></div>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+</ion-content>

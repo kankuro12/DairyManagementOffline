@@ -81,8 +81,13 @@ export class SqlliteService {
       this.run(sql, params)
         .then((result) => {
           console.log(result);
-          const localData = new type(result.rows.item(0));
-          resolve(localData);
+          if(result.rows.length>0){
+
+            const localData = new type(result.rows.item(0));
+            resolve(localData);
+          }else{
+            resolve(null);
+          }
         })
         .catch((err) => {
           console.error(err);

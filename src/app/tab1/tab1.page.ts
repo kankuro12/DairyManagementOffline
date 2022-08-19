@@ -10,7 +10,7 @@ export class Tab1Page {
 
   constructor(private db: SqlliteService) {}
   del(){
-    this.db.run('delete from milkdatas where id>0')
+    this.db.run('delete from milkamounts where id>0')
     .then((res)=>{
       console.log(res);
     })

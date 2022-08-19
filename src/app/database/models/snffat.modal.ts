@@ -2,18 +2,16 @@
 import { SqlliteService as db } from 'src/app/services/sqllite.service';
 import { Modal } from './model';
 
-export class MilkAmount extends Modal {
+export class SnfFat extends Modal {
   id: number;
-  session: number;
+  date: number;
   snf: number;
   fat: number;
-  rate: number;
-  amount: number;
   user_id: number;
 
 
-  table="farmers";
-  columns=['id','session','snf','fat','rate','amount','user_id'];
+  table="snffats";
+  columns=['id','date','snf','fat','user_id'];
 
   constructor(columns={}){
     super();

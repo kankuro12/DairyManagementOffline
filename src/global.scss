@@ -26,6 +26,9 @@
 @import "~@ionic/angular/css/flex-utils.css";
 @import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 
+.w-40{
+  width:40%;
+}
 div.readonly{
   pointer-events: none;
 }
@@ -33,7 +36,7 @@ div.readonly{
 .no-border-radius{
   border-radius:0 !important;
 }
-.no-outlin{
+.no-outline{
   &.form-control{
     box-shadow: none !important;
   }

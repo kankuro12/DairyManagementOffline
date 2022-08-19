@@ -71,6 +71,16 @@ export default [
     user_id integer,
     FOREIGN KEY(user_id) REFERENCES farmers(id)
   );
+  `,
+  `
+  create table IF NOT EXISTS snffats(
+    id INTEGER PRIMARY KEY,
+    date integer,
+    snf decimal(10,2),
+    fat decimal(10,2),
+    user_id integer,
+    FOREIGN KEY(user_id) REFERENCES farmers(id)
+  );
   `
 
 ];

@@ -1,0 +1,28 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-back-button slot="start"></ion-back-button>
+    <ion-title>
+      Rates
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="p-3">
+    <h5>Rate Type</h5>
+    <div class="row m-0">
+      <div class="col-6 p-0">
+        <button class="btn no-border-radius w-100" [ngClass]="{'btn-success': setting.rateType===1}" (click)="setting.setRateType(1)">
+          Fixed
+        </button>
+      </div>
+      <div class="col-6 p-0">
+        <button class="btn no-border-radius w-100" [ngClass]="{'btn-success': setting.rateType===2}" (click)="setting.setRateType(2)">
+          FAT SNF
+        </button>
+      </div>
+    </div>
+    <hr>
+  </div>
+
+</ion-content>

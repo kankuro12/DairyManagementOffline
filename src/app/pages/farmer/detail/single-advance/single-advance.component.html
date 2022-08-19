@@ -1,0 +1,12 @@
+<div class="row m-0">
+  <div class="col-3 p-0">
+    <input type="text" readonly  style="font-size: 12px;height: 100%;padding: 5px;"  class="form-control no-outline no-border-radius"  value="{{date}}">
+  </div>
+  <div class="col-6 p-0">
+    <input type="number"  class="form-control no-outline no-border-radius" [(ngModel)]="advance.amount"  >
+  </div>
+
+  <div class="col-3 p-0">
+    <button  class="btn btn-success w-100 no-outline no-border-radius" (click)="initUpdate()" >d</button>
+  </div>
+</div>

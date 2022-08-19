@@ -1,3 +1,6 @@
+import { SettingComponent } from './setting/setting.component';
+import { SnffatComponent } from './snffat/snffat.component';
+import { SingleAdvanceComponent } from './farmer/detail/single-advance/single-advance.component';
 import { SingleMilkComponentComponent } from './farmer/detail/single-milk-component/single-milk-component.component';
 import { DetailPage } from './farmer/detail/detail.page';
 import { RatesComponent } from './rates/rates.component';
@@ -10,7 +13,15 @@ import { PagesRoutingModule } from './pages.routing.module';
 
 
 @NgModule({
-  declarations: [CentersComponent,RatesComponent,DetailPage,SingleMilkComponentComponent],
+  declarations: [
+    CentersComponent,
+    RatesComponent,
+    DetailPage,
+    SingleMilkComponentComponent,
+    SingleAdvanceComponent,
+    SnffatComponent,
+    SettingComponent
+  ],
   imports: [
     CommonModule,
     IonicModule,

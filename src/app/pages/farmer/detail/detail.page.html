@@ -50,62 +50,140 @@
     <hr>
     <div *ngIf="detailLoaded">
       <div>
-        <h5>Milk Collection</h5>
-        <div class="row m-0">
-          <div class="col-3 p-0">
-            Date
-          </div>
-          <div class="col-3 p-0">Morning</div>
-          <div class="col-3 p-0">Evening</div>
-          <div class="col-3 p-0"></div>
-        </div>
-
-        <app-single-milk-component *ngFor="let milkData of milkDatas" [milkData]="milkData" (updated)="milkUpdated($event)"></app-single-milk-component>
-        <div class="row m-0">
-          <div class="col-3 p-0">
-            <strong>Total</strong>
-          </div>
-          <div class="col-3 ">{{m_total}}</div>
-          <div class="col-3 ">{{e_total}}</div>
-        </div>
+        <input type="checkbox" (change)="showDetail=!showDetail"> Show Details
       </div>
       <hr>
-      <div>
-        <h5>Advance/Peski</h5>
-        <div class="row m-0">
-          <div class="col-3 p-0">
-            Date
-          </div>
-          <div class="col-6 p-0">Amount</div>
-          <div class="col-3 p-0"></div>
-        </div>
 
-        <app-single-milk-component *ngFor="let milkData of milkDatas" [milkData]="milkData" (updated)="milkUpdated($event)"></app-single-milk-component>
-        <div class="row m-0">
-          <div class="col-3 p-0">
-            <strong>Total</strong>
+      <div *ngIf="showDetail">
+        <div *ngIf="milkDatas.length>0">
+          <h5>Milk Collection</h5>
+          <div class="row m-0">
+            <div class="col-3 p-0">
+              Date
+            </div>
+            <div class="col-3 p-0">Morning</div>
+            <div class="col-3 p-0">Evening</div>
+            <div class="col-3 p-0"></div>
           </div>
-          <div class="col-6 ">{{m_total}}</div>
+
+          <app-single-milk-component *ngFor="let milkData of milkDatas" [milkData]="milkData" (updated)="milkUpdated($event)"></app-single-milk-component>
+          <div class="row m-0">
+            <div class="col-3 p-0">
+              <strong>Total</strong>
+            </div>
+            <div class="col-3 ">{{m_total}}</div>
+            <div class="col-3 ">{{e_total}}</div>
+          </div>
         </div>
+        <hr>
+        <div  *ngIf="advances.length>0">
+          <h5>Advance/Peski</h5>
+          <div class="row m-0">
+            <div class="col-3 p-0">
+              Date
+            </div>
+            <div class="col-6 p-0">Amount</div>
+            <div class="col-3 p-0"></div>
+          </div>
+
+          <app-single-advance *ngFor="let advance of advances" [advance]="advance" (updated)="advanceUpdated($event)"></app-single-advance>
+          <div class="row m-0">
+            <div class="col-3 p-0">
+              <strong>Total</strong>
+            </div>
+            <div class="col-6 ">{{m_total}}</div>
+          </div>
+        </div>
+        <hr>
       </div>
-
-      <hr>
       <table class="table">
         <tr >
-          <th class="text-end w-25">
+          <th class="text-end w-40">
             Total Milk
           </th>
           <td class="ps-2">{{m_total+e_total}}</td>
         </tr>
-        <tr *ngIf="setting.rateType===1">
-          <th class="text-end w-25">
-            Rate
+
+        <tr *ngIf="setting.rateType===2">
+          <th class="text-end w-40">
+            Avg. Fat
           </th>
           <td class="ps-2">
-            {{rate.rate}}
+            {{fatAvg}}
           </td>
         </tr>
+        <tr *ngIf="setting.rateType===2">
+          <th class="text-end w-40">
+            Avg. Snf
+          </th>
+          <td class="ps-2">
+            {{snfAvg}}
+          </td>
+        </tr>
+        <tr >
+          <th class="text-end w-40">
+            Rate per litre
+          </th>
+          <td class="ps-2">
+            {{rateAmount}}
+          </td>
+        </tr>
+        <tr>
+          <th class="text-end w-40">
+            Total Amount
+          </th>
+          <td class="ps-2">
+            {{totalAmount}}
+          </td>
+        </tr>
+        <tr>
+          <th class="text-end w-40">
+            Advance
+          </th>
+          <td class="ps-2">
+            {{totalAdvance}}
+          </td>
+        </tr>
+        <tr *ngIf="prev>0">
+          <th class="text-end w-40">
+            Previous Balance
+          </th>
+          <td class="ps-2">
+            {{prev}}
+          </td>
+        </tr>
+        <tr *ngIf="prev<0">
+          <th class="text-end w-40">
+            Previous Due
+          </th>
+          <td class="ps-2">
+            {{-1*prev}}
+          </td>
+        </tr>
+        <tr>
+          <th colspan="2"><hr></th>
+        </tr>
+        <tr *ngIf="grandTotal>0">
+          <th class="text-end w-40">
+            Amount Payable
+          </th>
+          <td class="ps-2">
+            {{grandTotal}}
+          </td>
+        </tr>
+        <tr *ngIf="grandTotal<0">
+          <th class="text-end w-40">
+            Amount Receiable
+          </th>
+          <td class="ps-2">
+            {{-1*grandTotal}}
+          </td>
+        </tr>
+
       </table>
+      <div>
+        <button class="btn btn-primary" (click)="saveMilkAmount()"> {{hasMilkAmount?"Update Session":"Close Session"}}</button>
+      </div>
     </div>
   </div>
 </ion-content>
