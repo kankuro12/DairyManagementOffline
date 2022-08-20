@@ -1,0 +1,135 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Farmer Report</ion-title>
+    <ion-buttons slot="end" *ngIf="dataLoaded">
+      <ion-button color="danger" (click)="dataLoaded=false;">Resset</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="sticky-top bg-white shadow px-3 " *ngIf="dataLoaded">
+    <div class="py-2  d-flex justify-content-between" >
+      <span>{{centerName}}</span>
+      <span>{{curSession}}</span>
+    </div>
+    <div class="py-2">
+      <input type="text" class="form-control no-border-radius" (input)="search($event)" placeholder="Search user number or name">
+    </div>
+
+  </div>
+  <div class="p-3" *ngIf="initiated">
+    <div [ngClass]="{'d-none': dataLoaded}">
+
+      <div class="row m-0">
+        <div class="col-3 px-0 py-1">
+          <strong>
+            Center
+          </strong>
+        </div>
+        <div class="col-9 p-0">
+          <select  class="form-control no-outline no-border-radius" [(ngModel)]="center_id"  >
+            <option *ngFor="let center of centers"  [value]="center.id">
+              {{center.name}}
+            </option>
+          </select>
+        </div>
+      </div>
+      <app-session-chooser (done)="loadData($event)"></app-session-chooser>
+    </div>
+    <div *ngIf="dataLoaded">
+      <div class="b1  p-2"  *ngFor="let data of filterFarmerDatas">
+        <div class="row">
+          <div class="col-12">{{data.no}}, {{data.name}}</div>
+          <div class="col-4">
+            <strong>SNF</strong> : {{data.snf}}
+          </div>
+          <div class="col-4">
+            <strong>FAT</strong> : {{data.fat}}
+          </div>
+          <div class="col-4">
+            <strong>Rate</strong> : {{data.rate}}
+          </div>
+          <div class="col-4">
+            <strong>Milk</strong> : {{data.milkAmount}}
+          </div>
+          <div class="col-4">
+            <strong>Total</strong> : {{data.milkTotal}}
+          </div>
+          <div class="col-4">
+            <strong>Advance</strong> : {{data.advance}}
+          </div>
+          <div class="col-12">
+            <hr>
+          </div>
+          <div class="col-6"  >
+            <strong>Prev Balance</strong> : {{data.prevBalance}}
+          </div>
+          <div class="col-6"   >
+            <strong>Prev Due</strong> : {{data.prevDue}}
+          </div>
+          <div class="col-6"  >
+            <strong>Balance</strong> : {{data.balance}}
+          </div>
+          <div class="col-6" >
+            <strong>Due</strong> : {{data.due}}
+          </div>
+
+        </div>
+      </div>
+      <hr>
+      <div style="overflow-x:auto;">
+        <table>
+            <tr>
+              <th >No</th>
+              <th >Name</th>
+              <th *ngIf="setting.rateType===2">FAT</th>
+              <th *ngIf="setting.rateType===2">SNF</th>
+              <th>Rate</th>
+              <th>Milk</th>
+              <th>
+                Milk Total
+              </th>
+              <th>
+                Advance
+              </th>
+              <th>
+                Prev Balance
+              </th>
+              <th>
+                Prev Due
+              </th>
+              <th>
+                Balance
+              </th>
+              <th>Due</th>
+            </tr>
+            <tr *ngFor="let data of farmerDatas">
+                <td >{{data.no}}</td>
+                <td >{{data.name}}</td>
+                <td *ngIf="setting.rateType===2">{{data.fat}}</td>
+                <td *ngIf="setting.rateType===2">{{data.snf}}</td>
+                <td>{{data.rate}}</td>
+                <td>{{data.milkAmount}}</td>
+                <td>
+                  {{data.milkTotal}}
+                </td>
+                <td>
+                  {{data.advance}}
+                </td>
+                <td>
+                  {{data.prevBalance}}
+                </td>
+                <td>
+                  {{data.prevDue}}
+                </td>
+                <td>
+                  {{data.balance}}
+                </td>
+                <td>{{data.due}}</td>
+            </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</ion-content>

@@ -1,0 +1,31 @@
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+  border: 1px solid #ddd;
+}
+
+th, td {
+  text-align: left;
+  border: 1px solid #ddd;
+
+  padding: 8px;
+}
+
+.sticky{
+  position: sticky;
+  left: 0;
+  background: rgb(9, 123, 237);color:white;
+  width:70px;
+}
+
+.sticky-2{
+  position: sticky;
+  left: 70px;
+  background: rgb(9, 123, 237);color:white;
+  width:150px;
+}
+
+.b1{
+  border: 1px solid rgb(9, 123, 237);
+}

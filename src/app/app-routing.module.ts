@@ -12,6 +12,10 @@ const routes: Routes = [
     loadChildren: () => import('./pages/pages.module').then(m => m.PagesModule)
   },
   {
+    path: 'reports',
+    loadChildren: () => import('./report/report.module').then(m => m.ReportModule)
+  },
+  {
     path: 'advancetab',
     loadChildren: () => import('./advancetab/advancetab.module').then( m => m.AdvancetabPageModule)
   }
