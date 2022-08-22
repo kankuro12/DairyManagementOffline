@@ -18,6 +18,10 @@ const routes: Routes = [
   {
     path: 'advancetab',
     loadChildren: () => import('./advancetab/advancetab.module').then( m => m.AdvancetabPageModule)
+  },
+  {
+    path: 'payment',
+    loadChildren: () => import('./payment/payment.module').then( m => m.PaymentPageModule)
   }
 ];
 @NgModule({

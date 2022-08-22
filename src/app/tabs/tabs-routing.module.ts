@@ -1,3 +1,4 @@
+import { FarmerReportComponent } from './../report/farmer-report/farmer-report.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { TabsPage } from './tabs.page';
@@ -22,6 +23,14 @@ const routes: Routes = [
       {
         path: 'farmers',
         loadChildren: () => import('../farmers/farmers.module').then(m => m.FarmersModule)
+      },
+      {
+        path: 'payment',
+        loadChildren: () => import('../payment/payment.module').then(m => m.PaymentPageModule)
+      },
+      {
+        path: 'report',
+        component: FarmerReportComponent
       },
       {
         path: '',

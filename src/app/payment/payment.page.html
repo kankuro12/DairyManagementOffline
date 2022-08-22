@@ -1,0 +1,64 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Payment</ion-title>
+    <ion-buttons slot="end" *ngIf="loaded">
+      <ion-button color="danger" (click)="resetData()">Reset</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="p-3 sticky-top">
+    <div class="row m-0" *ngIf="loaded">
+      <div class="col-6 p-0">
+        <span class="btn w-100 no-border-radius " [ngClass]="{'btn-primary': type===1}" (click)="type=1">In</span>
+      </div>
+      <div class="col-6 p-0">
+          <span  class="btn w-100 no-border-radius " [ngClass]="{'btn-primary': type===2}" (click)="type=2">Out</span>
+      </div>
+    </div>
+    <hr class="my-1">
+    <app-add-payment [type]="type" #addPayment (dataLoad)="loaded=true"></app-add-payment>
+  </div>
+  <div class="px-3">
+    <table class="table" *ngIf="loaded">
+      <tr>
+        <th>No</th>
+        <th>Farmer</th>
+        <th>Amount</th>
+      </tr>
+      <tr *ngFor="let payment of filter(addPayment.payments)"  (dblclick)="initAction(payment.id)" [ngClass]="{'selected': localID===payment.id }">
+        <td>
+          {{payment.no}}
+        </td>
+        <td>
+          {{payment.name}}
+        </td>
+        <td>
+          {{payment.amount}}
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <ion-modal [isOpen]="isEditing">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Edit Payment</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="isEditing=false">Close</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <div class="row">
+          <div class="col-6 p-0"> <strong>Amount</strong> </div>
+
+          <div class="col-6 p-0"><input class="form-control no-border-radius" placeholder="SNF" #snfInput [(ngModel)]="amount" type="number"></div>
+          <div class="col-12 px-0 pt-3"><button class="btn btn-success w-100" (click)="updateData()">Save Data</button></div>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>

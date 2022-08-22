@@ -89,10 +89,9 @@
           <th>
             Amount
           </th>
-          <th></th>
         </tr>
 
-        <tr *ngFor="let advance of advances">
+        <tr *ngFor="let advance of advances" (dblclick)="initAction(advance.id)" [ngClass]="{'selected': advance.id===localID}">
           <td>
             {{advance.no}}
           </td>
@@ -102,14 +101,11 @@
           <td>
             {{advance.amount}}
           </td>
-          <td>
-            <ion-button color="danger" (click)="initDelete(advance)">
-              &times;
-            </ion-button>
-          </td>
+
         </tr>
         <tr>
-          <th colspan="2">
+          <th></th>
+          <th >
             Total
           </th>
           <th>
@@ -153,4 +149,26 @@
       </ion-content>
     </ng-template>
   </ion-modal>
+
+  <ion-modal [isOpen]="isEditing">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Edit Payment</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="isEditing=false">Close</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <div class="row">
+          <div class="col-6 p-0"> <strong>Amount</strong> </div>
+
+          <div class="col-6 p-0"><input class="form-control no-border-radius" placeholder="SNF" #advanceInput [(ngModel)]="eamount" type="number"></div>
+          <div class="col-12 px-0 pt-3"><button class="btn btn-success w-100" (click)="updateData()">Save Data</button></div>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
 </ion-content>

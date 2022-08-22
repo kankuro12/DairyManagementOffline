@@ -33,6 +33,11 @@ div.readonly{
   pointer-events: none;
 }
 
+tr.selected{
+  background-color:rgb(0, 122, 204) ;
+  color: white;
+}
+
 .no-border-radius{
   border-radius:0 !important;
 }
@@ -45,4 +50,10 @@ div.readonly{
 
   }
   outline: transparent;
+}
+
+.table{
+  th,td{
+    padding:5px;
+  }
 }

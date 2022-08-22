@@ -1,4 +1,5 @@
-import { AlertController } from '@ionic/angular';
+/* eslint-disable eqeqeq */
+import { AlertController, ActionSheetController } from '@ionic/angular';
 import { Advance } from './../database/models/advance.modal';
 import { Rate } from 'src/app/database/models/rate.modal';
 import { ElementRef } from '@angular/core';
@@ -10,6 +11,7 @@ import { SqlliteService } from 'src/app/services/sqllite.service';
 import { Farmer } from './../database/models/farmer.modal';
 import { Center } from './../database/models/center.modal';
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { Action } from 'rxjs/internal/scheduler/Action';
 
 @Component({
   selector: 'app-advancetab',
@@ -44,8 +46,14 @@ export class AdvancetabPage implements OnInit {
 
   initiated=false;
 
+  //edit
+  isEditing=false;
+  eamount: number;
+  localID: number;
+  advance: Advance;
 
-  constructor(private db: SqlliteService,private alertController: AlertController) { }
+
+  constructor(private db: SqlliteService,private alertController: AlertController,private actionSheetController: ActionSheetController) { }
 
   async ngOnInit() {
     const d4 = new NepaliDate(new Date());
@@ -178,6 +186,39 @@ export class AdvancetabPage implements OnInit {
     }).then((alert)=>alert.present());
 
   }
+
+  async initAction(id) {
+    this.localID=id;
+    this.advance = await this.db.selectONE(Advance, "select * from advances where id=?", [id]);
+    this.actionSheetController.create({
+      header: 'Advance',
+      buttons: [
+        {
+          text: 'Edit',
+          role: 'save',
+          icon: 'trash',
+          id: 'edit-button',
+          handler: () => {
+            this.isEditing=true;
+            this.eamount=this.advance.amount;
+          }
+        },
+        {
+          text: 'Delete',
+          role: 'destructive',
+          icon: 'create',
+          id: 'delete-button',
+          handler: () => {
+            if(confirm('Do you want to delete advance data?')){
+             this.del(id);
+            }
+
+          }
+        }
+      ]
+    }).then((action) => action.present());
+
+  }
   del(id){
     this.db.run("delete from advances where id=?",[id])
     .then((res)=>{
@@ -191,6 +232,28 @@ export class AdvancetabPage implements OnInit {
 
     });
   };
+
+  updateData(){
+    if(this.eamount != undefined && this.eamount != null ){
+      if(confirm('Do you want to update advance data?')){
+        this.advance.amount=this.eamount;
+        this.advance.save()
+        .then((a: Advance)=>{
+          const index= this.advances.findIndex(o=>o.id==this.advance.id);
+          const localFarmer= this.farmers.find(o=>o.id==this.advance.user_id);
+          this.isEditing=false;
+          this.amount=null;
+          this.advances[index]={...this.advance,no:localFarmer.no,name:localFarmer.name};
+          this.calculateTotalAdvance();
+        });
+      }
+    }else{
+      alert('Please enter all data');
+    }
+
+
+  }
+
   isNumber(num) {
     return num !== undefined && num !== null && !isNaN(num);
   }

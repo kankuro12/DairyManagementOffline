@@ -1,0 +1,60 @@
+<div *ngIf="initiated">
+  <div [ngClass]="{'d-none': loaded}">
+    <div class="row m-0">
+      <div class="col-md-3 col-6" *ngIf="centers.length>1">
+        <strong>Center</strong>
+        <select class="form-control">
+          <option *ngFor="let lc of centers" [ngValue]="lc.id">{{lc.name}}</option>
+        </select>
+      </div>
+      <div class="col-md-3 col-6" *ngIf="centers.length===1">
+        <strong>
+          center
+        </strong>
+        <div>
+          {{center.name}}
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <strong>
+          Date
+        </strong>
+        <div>
+          <input type="text" [(ngModel)]="date" class="form-control">
+        </div>
+      </div>
+
+      <div class="col-md-3 col-6 pt-4">
+
+        <button class="btn btn-success w-100" *ngIf="!loaded" (click)="loadData()">Load</button>
+      </div>
+
+    </div>
+  </div>
+  <div *ngIf="loaded">
+    <div class="d-flex justify-content-between">
+      <span>
+        {{center.name}}
+      </span>
+      <span>
+        {{date}}
+      </span>
+    </div>
+    <hr class="my-1">
+    <div class="d-flex ">
+      <div style="flex:2;">
+        <input type="number" #noinput placeholder="Farmer No" class="form-control no-border-radius no-outline"
+          [(ngModel)]="no">
+      </div>
+      <div style="flex:2;">
+        <input type="number" #amountinput placeholder="Amount" class="form-control no-border-radius no-outline"
+          (keypress)="check($event)" [(ngModel)]="amount">
+      </div>
+      <div style="flex:1;">
+        <button class="btn btn-success no-border-radius no-outline" (click)="save()">Save</button>
+      </div>
+    </div>
+    <hr>
+  </div>
+
+</div>
