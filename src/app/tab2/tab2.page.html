@@ -1,10 +1,12 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Tab 2
+      Milk
     </ion-title>
-    <ion-buttons slot="end">
-      <ion-button color="danger" *ngIf="loaded" (click)="loaded=false">Reset</ion-button>
+    <ion-buttons slot="end"  *ngIf="loaded">
+      <ion-button color="primary" *ngIf="setting.sync.milk.f" (click)="pull()">Download</ion-button>
+      <ion-button color="primary" *ngIf="setting.sync.milk.b" (click)="push()">Upload</ion-button>
+      <ion-button color="danger"  (click)="loaded=false">Reset</ion-button>
     </ion-buttons>
   </ion-toolbar>
 

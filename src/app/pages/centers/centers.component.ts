@@ -1,3 +1,4 @@
+import { SettingsService } from 'src/app/services/settings.service';
 import { SqlliteService } from './../../services/sqllite.service';
 import { Center } from './../../database/models/center.modal';
 import { Component, OnInit } from '@angular/core';
@@ -14,7 +15,7 @@ export class CentersComponent implements OnInit {
   mode=0;
   center: Center;
   working=false;
-  constructor(private db: SqlliteService,private alert: AlertController) { }
+  constructor(private db: SqlliteService,private alert: AlertController,public setting: SettingsService) { }
 
   async ngOnInit() {
     this.centers=await this.db.select(Center,"select * from centers",[]);

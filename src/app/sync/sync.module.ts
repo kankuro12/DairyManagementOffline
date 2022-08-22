@@ -1,3 +1,4 @@
+import { FarmersyncComponent } from './farmersync/farmersync.component';
 import { MilkdatasyncComponent } from './milkdatasync/milkdatasync.component';
 import { CentersyncComponent } from './centersync/centersync.component';
 import { NgModule } from '@angular/core';
@@ -17,6 +18,6 @@ import { SyncPage } from './sync.page';
     IonicModule,
     SyncPageRoutingModule
   ],
-  declarations: [SyncPage,CentersyncComponent,MilkdatasyncComponent]
+  declarations: [SyncPage,CentersyncComponent,MilkdatasyncComponent,FarmersyncComponent]
 })
 export class SyncPageModule {}

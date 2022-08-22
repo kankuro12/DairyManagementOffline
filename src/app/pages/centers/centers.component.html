@@ -4,7 +4,7 @@
     <ion-title>
       Centers
     </ion-title>
-    <ion-buttons slot="end">
+    <ion-buttons slot="end" *ngIf="setting.sync.center.b">
       <ion-button color="primary" (click)="initAdd()">Add New</ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -87,8 +87,8 @@
             </div>
           </div>
         </div>
-        <hr class="mb-1">
-        <div class="d-flex justify-content-between p-2">
+        <hr class="mb-1" *ngIf="setting.sync.center.b">
+        <div class="d-flex justify-content-between p-2" *ngIf="setting.sync.center.b">
             <button class="btn btn-success" (click)="initEdit(center)">Edit</button>
             <button class="btn btn-danger" (click)="initDelete(center)">Delete</button>
         </div>

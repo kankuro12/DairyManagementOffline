@@ -28,7 +28,7 @@
     <div class="col-md-3 col-6" [routerLink]="['/pages/setting']" routerLinkActive="router-link-active" >
       Settings
     </div>
-    <div class="col-md-3 col-6" [routerLink]="['/sync']" routerLinkActive="router-link-active" >
+    <div *ngIf="setting.enableSync" class="col-md-3 col-6" [routerLink]="['/sync']" routerLinkActive="router-link-active" >
       sync
     </div>
     <div class="col-md-3 col-6" (click)="del()" >

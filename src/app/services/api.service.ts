@@ -5,13 +5,14 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class ApiService {
-  base="";
+  base="http://192.168.1.75:8000/api/";
   constructor(private client:  HttpClient) { }
   get(part){
-    return this.client.get('base'+part);
+    console.log(this.base+part);
+    return this.client.get(this.base+part);
   }
   post(part,data){
-    return this.client.post('base'+part,data);
+    return this.client.post(this.base+part,data);
   }
 
 }

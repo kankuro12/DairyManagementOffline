@@ -1,3 +1,5 @@
+/* eslint-disable arrow-body-style */
+import { ApiService } from './../services/api.service';
 import { SettingsService } from 'src/app/services/settings.service';
 import { ActionSheetController } from '@ionic/angular';
 /* eslint-disable eqeqeq */
@@ -63,8 +65,11 @@ export class Tab2Page implements OnInit {
     private changeDetection: ChangeDetectorRef ,
     private alertController: AlertController,
     public setting: SettingsService,
+    private api: ApiService,
     private actionSheetController: ActionSheetController   ) {
-    const d4 = new NepaliDate(new Date());
+    const localDate=new Date();
+    this.session=localDate.getHours()<2?'Morning':'Evening';
+    const d4 = new NepaliDate(localDate);
     this.date = d4.format('YYYY-MM-DD');
 
   }
@@ -156,7 +161,12 @@ export class Tab2Page implements OnInit {
     this.farmer = this.farmers.find(o => o.no === this.no);
     this.milkDataSaving = true;
     if (this.farmer == null) {
-      this.initFarmerAdd();
+      if(this.setting.sync.farmer.b){
+
+        this.initFarmerAdd();
+      }else{
+        alert('Farmer Not Found');
+      }
     } else {
       this.saveMilkData();
     }
@@ -402,5 +412,68 @@ export class Tab2Page implements OnInit {
       alert('Please enter all data');
     }
   }
+
+  //milk data sync
+  push(){
+    if(confirm(`Do you want to sync milk collection for ${this.date} of ${this.center.name}`)){
+      const data={
+        center_id:this.center_id,
+        date:this.date,
+        data:this.milkDatas.map((o)=>{
+          return {id:o.user_id,m_amount:o.m_amount,e_amount:o.e_amount};
+        })
+      };
+      console.log(data);
+
+      this.api.post('farmers/push-milk-data',data)
+      .subscribe((res)=>{console.log(res);},(err)=>{console.log(err);});
+
+    }
+  }
+
+  pull(){
+    const data={
+      center_id:this.center_id,
+      date:this.date,
+    };
+    console.log(data);
+
+    this.api.post('farmers/pull-milk-data',data)
+    .subscribe(async (mdatas: any[])=>{
+      for (let index = 0; index < mdatas.length; index++) {
+        const mdata = mdatas[index];
+        const localMilkData=this.milkDatas.find(o=>o.user_id==mdata.user_id);
+        console.log(localMilkData);
+
+        if(localMilkData!=null){
+          const md=new MilkData({
+            user_id:mdata.user_id,
+            center_id:mdata.center_id,
+            date:mdata.date,
+            m_amount:mdata.m_amount,
+            e_amount:mdata.e_amount,
+            id:localMilkData.id
+          });
+          console.log(md,"old");
+
+          await md.save();
+        }else{
+          const md=new MilkData({
+            user_id:mdata.user_id,
+            center_id:mdata.center_id,
+            date:mdata.date,
+            m_amount:mdata.m_amount,
+            e_amount:mdata.e_amount,
+          });
+          console.log(md,"new");
+
+          await md.save();
+        }
+      }
+    },(err)=>{console.log(err);});
+  }
+
+
+
 
 }

@@ -45,6 +45,21 @@ export class SettingsService {
     },
 
   ];
+  enableSync=true;
+  sync={
+    center:{
+      f:true,
+      b:false
+    },
+    milk:{
+      f:true,
+      b:true
+    },
+    farmer:{
+      f:true,
+      b:false
+    }
+  };
   open=[true,true,true,false,false];
   constructor() {
     const rateTypeSTR=localStorage.getItem('rate_type');
