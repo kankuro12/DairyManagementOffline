@@ -31,6 +31,7 @@ export class FarmersPage implements OnInit {
       this.filterdList=this.farmerList.filter(o=>o.center_id==this.center_id);
     }
   }
+
   filterData(){
     this.filterdList=this.farmerList.filter(o=>o.center_id==this.center_id);
   }
@@ -38,6 +39,5 @@ export class FarmersPage implements OnInit {
   centerChanged(e){
     this.filterData();
   }
-
 
 }

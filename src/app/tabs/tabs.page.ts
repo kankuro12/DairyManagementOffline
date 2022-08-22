@@ -1,3 +1,4 @@
+import { SettingsService } from 'src/app/services/settings.service';
 import { Component } from '@angular/core';
 
 @Component({
@@ -7,6 +8,11 @@ import { Component } from '@angular/core';
 })
 export class TabsPage {
 
-  constructor() {}
+  constructor(public setting: SettingsService) {}
+
+  filter()
+  {
+    return this.setting.tabs.filter(o=>o.open);
+  }
 
 }

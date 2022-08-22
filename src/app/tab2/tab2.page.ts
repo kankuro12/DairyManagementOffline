@@ -1,3 +1,5 @@
+import { SettingsService } from 'src/app/services/settings.service';
+import { ActionSheetController } from '@ionic/angular';
 /* eslint-disable eqeqeq */
 import { AlertController } from '@ionic/angular';
 /* eslint-disable @typescript-eslint/no-unused-expressions */
@@ -48,10 +50,20 @@ export class Tab2Page implements OnInit {
   totalRates = [];
   totalRatesLine = [0,0];
 
+  //edit
+  localID=0;
+  isEditing=false;
+  ee_amount: number;
+  em_amount: number;
 
 
 
-  constructor(private db: SqlliteService,    private changeDetection: ChangeDetectorRef ,private alertController: AlertController   ) {
+
+  constructor(private db: SqlliteService,
+    private changeDetection: ChangeDetectorRef ,
+    private alertController: AlertController,
+    public setting: SettingsService,
+    private actionSheetController: ActionSheetController   ) {
     const d4 = new NepaliDate(new Date());
     this.date = d4.format('YYYY-MM-DD');
 
@@ -60,27 +72,35 @@ export class Tab2Page implements OnInit {
   async updateTotal() {
     const localTotals = [0, 0];
     const localTotalRates = [];
-    for (const rate of this.rates) {
-      localTotalRates['rate_id' + rate.id] = { name: rate.name, total: 0, rate: rate.rate };
-    }
+    if(this.setting.rateType==1){
 
+      for (const rate of this.rates) {
+        localTotalRates['rate_id' + rate.id] = { name: rate.name, total: 0, rate: rate.rate };
+      }
+    }
 
     for (let index = 0; index < this.milkDatas.length; index++) {
       const milkData = this.milkDatas[index];
       localTotals[0] += milkData.m_amount;
       localTotals[1] += milkData.e_amount;
-      localTotalRates['rate_id' + milkData.type].total += milkData.m_amount + milkData.e_amount;
+      if(this.setting.rateType==1){
+
+        localTotalRates['rate_id' + milkData.type].total += milkData.m_amount + milkData.e_amount;
+      }
     }
     this.totals = localTotals;
-    this.totalRates=[];
-    this.totalRatesLine = [0,0];
+    if(this.setting.rateType==1){
 
-    for (const key in localTotalRates) {
-      if (Object.prototype.hasOwnProperty.call(localTotalRates, key)) {
-        const o = localTotalRates[key];
-        this.totalRates.push([o.name,o.rate,o.total]);
-        this.totalRatesLine[0]+=o.total;
-        this.totalRatesLine[1]+= o.total*o.rate;
+      this.totalRates=[];
+      this.totalRatesLine = [0,0];
+
+      for (const key in localTotalRates) {
+        if (Object.prototype.hasOwnProperty.call(localTotalRates, key)) {
+          const o = localTotalRates[key];
+          this.totalRates.push([o.name,o.rate,o.total]);
+          this.totalRatesLine[0]+=o.total;
+          this.totalRatesLine[1]+= o.total*o.rate;
+        }
       }
     }
 
@@ -314,6 +334,73 @@ export class Tab2Page implements OnInit {
     this.updateTotal();
 
 
+  }
+
+
+  //edit data
+  async initAction(id) {
+    this.localID=id;
+    this.milkData = await this.db.selectONE(MilkData, "select * from milkdatas where id=?", [id]);
+    this.actionSheetController.create({
+      header: 'Milk Data',
+      buttons: [
+        {
+          text: 'Edit',
+          role: 'save',
+          icon: 'trash',
+          id: 'edit-button',
+          handler: async () => {
+            this.isEditing=true;
+            this.ee_amount=this.milkData.e_amount;
+            this.em_amount=this.milkData.m_amount;
+            this.isEditing=true;
+          }
+        },
+        {
+          text: 'Delete',
+          role: 'destructive',
+          icon: 'create',
+          id: 'delete-button',
+          handler: () => {
+            if(confirm('Do you want to delete milk collection data?')){
+              this.milkData.del()
+              .then((r)=>{
+
+                const index=this.milkDatas.findIndex(o=>o.id==this.localID);
+                this.milkDatas.splice(index,1);
+                this.updateTotal();
+              });
+            }
+
+          }
+        }
+      ]
+    }).then((action) => action.present());
+
+  }
+
+  updateData(){
+    if(this.ee_amount != undefined && this.ee_amount != null && this.em_amount != undefined && this.em_amount != null){
+
+      if(confirm('Do you want to update milk collection data')){
+        this.milkData.e_amount=this.ee_amount;
+        this.milkData.m_amount=this.em_amount;
+        this.milkData.save()
+        .then((s: MilkData)=>{
+          const index= this.milkDatas.findIndex(o=>o.id==this.milkData.id);
+          const localFarmer= this.farmers.find(o=>o.id==this.milkData.user_id);
+          this.isEditing=false;
+          this.ee_amount=null;
+          this.em_amount=null;
+          this.milkDatas[index]={...this.milkData,no:localFarmer.no,name:localFarmer.name};
+          this.updateTotal();
+
+        });
+
+      }
+    }else{
+      alert('Please enter all data');
+    }
   }
 
 }

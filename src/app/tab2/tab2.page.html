@@ -12,12 +12,12 @@
 
 <ion-content [fullscreen]="true">
   <div *ngIf="inititated">
-    <div class="d-flex justify-content-between  p-3" style="position: sticky;top:0px;background: white;" *ngIf="loaded">
-      <strong>{{center.name}}</strong>
-      <strong>{{session}}</strong>
-      <strong>{{date}}</strong>
-    </div>
-    <div class="p-3">
+    <div class="p-3"  style="position: sticky;top:0px;background: white;">
+      <div class="d-flex justify-content-between  " *ngIf="loaded">
+        <strong>{{center.name}}</strong>
+        <strong>{{session}}</strong>
+        <strong>{{date}}</strong>
+      </div>
       <div [ngClass]="{'d-none': loaded}">
         <div class="row m-0">
           <div class="col-md-3 col-6" *ngIf="centers.length>1">
@@ -56,36 +56,24 @@
 
         </div>
       </div>
-      <div *ngIf="loaded">
-
-        <hr>
-        <div class="d-flex ">
-          <div style="flex:2;">
-            <input type="number" #noinput placeholder="Farmer No" class="form-control no-border-radius no-outline"
-              [(ngModel)]="no">
-          </div>
-          <div style="flex:2;">
-            <input type="number" #amountinput placeholder="Milk Liter" class="form-control no-border-radius no-outline"
-              (keypress)="check($event)" [(ngModel)]="amount">
-          </div>
-          <div style="flex:1;">
-            <button class="btn btn-success no-border-radius no-outline" (click)="save()">Save</button>
-          </div>
+      <hr>
+      <div class="d-flex " *ngIf="loaded">
+        <div style="flex:2;">
+          <input type="number" #noinput placeholder="Farmer No" class="form-control no-border-radius no-outline"
+            [(ngModel)]="no">
         </div>
+        <div style="flex:2;">
+          <input type="number" #amountinput placeholder="Milk Liter" class="form-control no-border-radius no-outline"
+            (keypress)="check($event)" [(ngModel)]="amount">
+        </div>
+        <div style="flex:1;">
+          <button class="btn btn-success no-border-radius no-outline" (click)="save()">Save</button>
+        </div>
+      </div>
+    </div>
+    <div class="px-3 pb-3">
+      <div *ngIf="loaded">
         <hr>
-        <!-- <div class="shadow mb-3 p-3" *ngFor="let milkData of milkDatas">
-          <div>
-            <strong>Farmer</strong> : {{milkData.name}} - {{milkData.no}}
-          </div>
-          <div class="row ">
-            <div class="col-6">
-              <strong>Morning</strong> : {{milkData.m_amount}} L
-            </div>
-            <div class="col-6">
-              <strong>Evening</strong> : {{milkData.e_amount}} L
-            </div>
-          </div>
-        </div> -->
         <table class="table">
           <tr>
             <th>
@@ -101,7 +89,7 @@
               Evening
             </th>
           </tr>
-          <tr *ngFor="let milkData of milkDatas">
+          <tr *ngFor="let milkData of milkDatas" (dblclick)="initAction(milkData.id)"  [ngClass]="{'selected': localID===milkData.id}">
             <td>
               {{milkData.no}}
             </td>
@@ -125,44 +113,46 @@
             </th>
           </tr>
         </table>
-        <hr>
-        <div class="">
-          <h5>Price Estimate</h5>
-          <table class="table">
-            <tr>
-              <th>
-                Name
-              </th>
-              <th>
-                Rate
-              </th>
-              <th>
-                Milk
-              </th>
-              <th>
-                Total
-              </th>
-            </tr>
-            <tr *ngFor="let totalRate of totalRates">
-              <td>
-                {{totalRate[0]}}
-              </td>
-              <td>
-                {{totalRate[1]}}
-              </td>
-              <td>
-                {{totalRate[2]}}
-              </td>
-              <td>
-                {{totalRate[2] * totalRate[1]}}
-              </td>
-            </tr>
-            <tr>
-              <th colspan="2">Total</th>
-              <th>{{totalRatesLine[0]}}</th>
-              <th>{{totalRatesLine[1]}}</th>
-            </tr>
-          </table>
+        <div *ngIf="setting.rateType===1">
+          <hr>
+          <div class="">
+            <h5>Price Estimate</h5>
+            <table class="table">
+              <tr>
+                <th>
+                  Name
+                </th>
+                <th>
+                  Rate
+                </th>
+                <th>
+                  Milk
+                </th>
+                <th>
+                  Total
+                </th>
+              </tr>
+              <tr *ngFor="let totalRate of totalRates">
+                <td>
+                  {{totalRate[0]}}
+                </td>
+                <td>
+                  {{totalRate[1]}}
+                </td>
+                <td>
+                  {{totalRate[2]}}
+                </td>
+                <td>
+                  {{totalRate[2] * totalRate[1]}}
+                </td>
+              </tr>
+              <tr>
+                <th colspan="2">Total</th>
+                <th>{{totalRatesLine[0]}}</th>
+                <th>{{totalRatesLine[1]}}</th>
+              </tr>
+            </table>
+          </div>
         </div>
       </div>
 
@@ -187,8 +177,10 @@
             <div class="col-12">
               <input type="text" placeholder="Farmer Name" [(ngModel)]="fname" class="form-control">
             </div>
-            <div class="col-6 py-2" *ngFor="let rate of rates">
-              <input type="radio" [(ngModel)]="rate_id" [value]="rate.id">{{rate.name}}
+            <div class="col-6 py-2" *ngFor="let rate of rates"  >
+              <span *ngIf="setting.rateType===1">
+                <input  type="radio" [(ngModel)]="rate_id" [value]="rate.id">{{rate.name}}
+              </span>
             </div>
             <div class="col-6">
               <button class="btn btn-success w-100" (click)="saveFarmer()" *ngIf="!farmerSaving">Save</button>
@@ -200,5 +192,28 @@
         </ion-content>
       </ng-template>
     </ion-modal>
+
+
+  <ion-modal [isOpen]="isEditing">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Edit Milk Data</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="isEditing=false">Close</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <div class="row">
+          <div class="col-6 p-0"> <strong>Morning</strong> </div>
+          <div class="col-6 p-0"> <strong>Evening</strong> </div>
+          <div class="col-6 p-0"><input class="form-control no-border-radius" placeholder="Morning" #snfInput [(ngModel)]="em_amount" type="number" ></div>
+          <div class="col-6 p-0"><input class="form-control no-border-radius" placeholder="Evening" #morningInput [(ngModel)]="ee_amount" type="number" ></div>
+          <div class="col-12 px-0 pt-2"><button class="btn btn-success w-100" (click)="updateData()">Save Data</button></div>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
   </div>
 </ion-content>
