@@ -59,7 +59,7 @@ export class Modal {
             if (res.insertId) {
               this[this.primary] = res.insertId;
             }
-            console.log(this);
+            console.log("saved",query);
             resolve(this);
           })
           .catch((err) => {

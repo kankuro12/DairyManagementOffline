@@ -12,27 +12,39 @@
       <ion-title size="large">Dairy Management</ion-title>
     </ion-toolbar>
   </ion-header>
-  <div class="row">
-    <div class="col-md-3 col-6" [routerLink]="['/pages/centers']" routerLinkActive="router-link-active" >
-      centers
-    </div>
-    <div class="col-md-3 col-6" [routerLink]="['/pages/rates']" routerLinkActive="router-link-active" >
-      rates
-    </div>
-    <div class="col-md-3 col-6" [routerLink]="['/pages/snffat']" routerLinkActive="router-link-active" >
-      snf fat
-    </div>
-    <div class="col-md-3 col-6" [routerLink]="['/reports']" routerLinkActive="router-link-active" >
-      Reports
-    </div>
-    <div class="col-md-3 col-6" [routerLink]="['/pages/setting']" routerLinkActive="router-link-active" >
-      Settings
-    </div>
-    <div *ngIf="setting.enableSync" class="col-md-3 col-6" [routerLink]="['/sync']" routerLinkActive="router-link-active" >
-      sync
-    </div>
-    <div class="col-md-3 col-6" (click)="del()" >
-      del
+  <div class="p-3">
+
+    <div class="row ">
+      <div class="col-md-3 col-6" *ngFor="let item of activeParts(setting.home)" [routerLink]="[item.path]" routerLinkActive="router-link-active" >
+        <div class="item shadow">
+          {{item.title}}
+        </div>
+      </div>
+      <div class="col-md-3 col-6" [routerLink]="['/pages/rates']" routerLinkActive="router-link-active" >
+        <div class="item shadow">
+          rates
+        </div>
+      </div>
+
+      <div class="col-md-3 col-6" [routerLink]="['/reports']" routerLinkActive="router-link-active" >
+        <div class="item shadow">
+          Reports
+        </div>
+      </div>
+      <div class="col-md-3 col-6" [routerLink]="['/pages/setting']" routerLinkActive="router-link-active" >
+        <div class="item shadow">
+          Settings
+        </div>
+      </div>
+      <div *ngIf="setting.enableSync" class="col-md-3 col-6" [routerLink]="['/sync']" routerLinkActive="router-link-active" >
+        <div class="item shadow">
+
+          Sync
+        </div>
+      </div>
+      <!-- <div class="col-md-3 col-6" (click)="del()" >
+        del
+      </div> -->
     </div>
   </div>
 </ion-content>

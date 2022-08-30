@@ -5,7 +5,40 @@ import { Injectable, Type } from '@angular/core';
 })
 export class SettingsService {
   //1=fixed [eg gai,vaishi] 2=calculate from snf fat
-  rateType=1;
+  rateType=2;
+
+  home=[
+    {
+      title:'Centers',
+      path: '/pages/centers',
+      active: true,
+
+    },
+    {
+      title:'Rates',
+      path: '/pages/rates',
+      active: false,
+
+    },
+    {
+      title:'Reports',
+      path: '/reports',
+      active: false,
+
+    },
+    {
+      title:'Setting',
+      path: '/pages/setting',
+      active: false,
+
+    },
+    {
+      title:'Sync',
+      path: '/sync',
+      active: true,
+
+    }
+  ];
   tabs=[
     {
       title:'Home',
@@ -20,12 +53,18 @@ export class SettingsService {
       icon:'triangle',
       open: true,
 
+    }, {
+      title:'Fat SNF',
+      tab:'snffat',
+      icon:'triangle',
+      open: true,
+
     },
     {
       title:'Advance',
       tab:'advance',
       icon:'triangle',
-      open: true,
+      open: false,
 
     },
     {
@@ -52,14 +91,19 @@ export class SettingsService {
       b:false
     },
     milk:{
-      f:true,
+      f:false,
+      b:true
+    },
+    snffat:{
+      f:false,
       b:true
     },
     farmer:{
       f:true,
-      b:false
+      b:true
     }
   };
+
   open=[true,true,true,false,false];
   constructor() {
     const rateTypeSTR=localStorage.getItem('rate_type');
@@ -74,6 +118,5 @@ export class SettingsService {
    setRateType(type){
     this.rateType=type;
     localStorage.setItem('rate_type',this.rateType.toString());
-
    }
 }

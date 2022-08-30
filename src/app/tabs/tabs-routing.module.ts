@@ -2,6 +2,7 @@ import { FarmerReportComponent } from './../report/farmer-report/farmer-report.c
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { TabsPage } from './tabs.page';
+import { SnffatComponent } from '../pages/snffat/snffat.component';
 
 const routes: Routes = [
   {
@@ -31,6 +32,10 @@ const routes: Routes = [
       {
         path: 'report',
         component: FarmerReportComponent
+      },
+      {
+        path: 'snffat',
+        component: SnffatComponent
       },
       {
         path: '',

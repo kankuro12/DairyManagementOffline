@@ -13,7 +13,7 @@
       <div class="row m-0">
         <div class="col-md-3 col-6" *ngIf="centers.length>1">
           <strong>Center</strong>
-          <select class="form-control">
+          <select class="form-control" [(ngModel)]="center_id">
             <option *ngFor="let lc of centers" [ngValue]="lc.id">{{lc.name}}</option>
           </select>
         </div>

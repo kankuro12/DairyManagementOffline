@@ -2,7 +2,7 @@ export default [
   `
   CREATE TABLE IF NOT EXISTS farmers(
     id INTEGER PRIMARY KEY,
-    no INTEGER unique,
+    no INTEGER,
     name TEXT,
     type INTEGER,
     center_id INTEGER

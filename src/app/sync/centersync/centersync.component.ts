@@ -8,7 +8,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./centersync.component.scss'],
 })
 export class CentersyncComponent implements OnInit {
-
+  pulling=1;
+  total=1;
+  current=0;
   constructor(private api: ApiService) { }
 
   ngOnInit() {}
@@ -16,13 +18,27 @@ export class CentersyncComponent implements OnInit {
   importData(){
 
     if(confirm('Do you want to fetch center data from server?')){
+      this.pulling=2;
+      this.current=0;
       this.api.get('centers')
       .subscribe( (res: any)=>{
-        res.centers.forEach(center => {
-          const c=new Center(center);
-          c.save();
-        });
-      });
+        this.total=res.centers.length;
+        if(this.total>0){
+          res.centers.forEach(center => {
+            const c=new Center(center);
+            c.save();
+            this.pulling=3;
+            this.current+=1;
+            if(this.total===this.current){
+              this.pulling=1;
+              alert("Data fetched sucessfully");
+            }
+          });
+
+        }else{
+          this.pulling=1;
+        }
+      },(err)=>{this.pulling=1;alert("Some Error Occured Please Try Again.");});
     }
   }
 

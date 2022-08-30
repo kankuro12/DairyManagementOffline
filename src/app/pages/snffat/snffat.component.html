@@ -1,8 +1,10 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>SNF FAT</ion-title>
-    <ion-buttons slot="end">
-      <ion-button color="danger" *ngIf="loaded" (click)="loaded=false">Reset</ion-button>
+    <ion-buttons slot="end" *ngIf="loaded" >
+      <ion-button color="danger" (click)="loaded=false">Reset</ion-button>
+      <ion-button color="primary" *ngIf="setting.sync.snffat.b" (click)="push()">Upload</ion-button>
+
     </ion-buttons>
   </ion-toolbar>
 </ion-header>

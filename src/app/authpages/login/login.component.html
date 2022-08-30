@@ -1,0 +1,27 @@
+<ion-content fullscreen="true" >
+  <div class="container py-2">
+    <div class="image">
+      <img src="https://pajulahti.com/wp-content/uploads/2017/04/500x500.jpeg" alt="">
+    </div>
+  </div>
+
+  <div class="p-3 mt-3">
+    <h5 class="fw-bolder text-center">
+      Welcome Back
+    </h5>
+    <div class="input mb-3">
+      <input type="number" [(ngModel)]="phone" placeholder="Enter Phone Number">
+    </div>
+    <div class="input mb-2">
+      <input type="password" [(ngModel)]="password" placeholder="Enter Password">
+    </div>
+    <div *ngIf="!auth.loading">
+      <div class="btn btn-primary  mt-1 p-2 w-100" (click)="login()">
+        Login
+      </div>
+    </div>
+    <div class="text-center" *ngIf="auth.loading">
+      <ion-spinner name="bubbles"></ion-spinner>
+    </div>
+  </div>
+</ion-content>

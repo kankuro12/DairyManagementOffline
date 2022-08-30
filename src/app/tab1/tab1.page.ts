@@ -19,4 +19,8 @@ export class Tab1Page {
       console.log(err);
     });
   }
+
+  activeParts(datas){
+    return datas.filter(o=>o.active);
+  }
 }

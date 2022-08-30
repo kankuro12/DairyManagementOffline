@@ -1,7 +1,7 @@
 /* eslint-disable arrow-body-style */
 import { ApiService } from './../services/api.service';
 import { SettingsService } from 'src/app/services/settings.service';
-import { ActionSheetController } from '@ionic/angular';
+import { ActionSheetController, LoadingController } from '@ionic/angular';
 /* eslint-disable eqeqeq */
 import { AlertController } from '@ionic/angular';
 /* eslint-disable @typescript-eslint/no-unused-expressions */
@@ -50,25 +50,28 @@ export class Tab2Page implements OnInit {
   //totals
   totals = [0, 0];
   totalRates = [];
-  totalRatesLine = [0,0];
+  totalRatesLine = [0, 0];
 
   //edit
-  localID=0;
-  isEditing=false;
+  localID = 0;
+  isEditing = false;
   ee_amount: number;
   em_amount: number;
+
+  loading: any ;
 
 
 
 
   constructor(private db: SqlliteService,
-    private changeDetection: ChangeDetectorRef ,
+    private changeDetection: ChangeDetectorRef,
     private alertController: AlertController,
     public setting: SettingsService,
+    private loadingCtrl: LoadingController,
     private api: ApiService,
-    private actionSheetController: ActionSheetController   ) {
-    const localDate=new Date();
-    this.session=localDate.getHours()<2?'Morning':'Evening';
+    private actionSheetController: ActionSheetController) {
+    const localDate = new Date();
+    this.session = localDate.getHours() < 2 ? 'Morning' : 'Evening';
     const d4 = new NepaliDate(localDate);
     this.date = d4.format('YYYY-MM-DD');
 
@@ -77,37 +80,41 @@ export class Tab2Page implements OnInit {
   async updateTotal() {
     const localTotals = [0, 0];
     const localTotalRates = [];
-    if(this.setting.rateType==1){
 
       for (const rate of this.rates) {
         localTotalRates['rate_id' + rate.id] = { name: rate.name, total: 0, rate: rate.rate };
       }
-    }
+
 
     for (let index = 0; index < this.milkDatas.length; index++) {
       const milkData = this.milkDatas[index];
       localTotals[0] += milkData.m_amount;
       localTotals[1] += milkData.e_amount;
-      if(this.setting.rateType==1){
-
+      try {
         localTotalRates['rate_id' + milkData.type].total += milkData.m_amount + milkData.e_amount;
+      } catch (error) {
+
       }
     }
     this.totals = localTotals;
-    if(this.setting.rateType==1){
 
-      this.totalRates=[];
-      this.totalRatesLine = [0,0];
+    try {
+      this.totalRates = [];
+      this.totalRatesLine = [0, 0];
 
       for (const key in localTotalRates) {
         if (Object.prototype.hasOwnProperty.call(localTotalRates, key)) {
           const o = localTotalRates[key];
-          this.totalRates.push([o.name,o.rate,o.total]);
-          this.totalRatesLine[0]+=o.total;
-          this.totalRatesLine[1]+= o.total*o.rate;
+          this.totalRates.push([o.name, o.rate, o.total]);
+          this.totalRatesLine[0] += o.total;
+          this.totalRatesLine[1] += o.total * o.rate;
         }
       }
+
+    } catch (error) {
+
     }
+
 
 
   }
@@ -159,12 +166,15 @@ export class Tab2Page implements OnInit {
 
 
     this.farmer = this.farmers.find(o => o.no === this.no);
+    console.log(this.farmer);
+
     this.milkDataSaving = true;
+
     if (this.farmer == null) {
-      if(this.setting.sync.farmer.b){
+      if (this.setting.sync.farmer.b) {
 
         this.initFarmerAdd();
-      }else{
+      } else {
         alert('Farmer Not Found');
       }
     } else {
@@ -198,57 +208,57 @@ export class Tab2Page implements OnInit {
     const localData = this.milkDatas.find(o => o.user_id === this.farmer.id && o.date === this.curDate);
 
     console.log(this.farmer, localData, this.farmers);
-    let needConformation=false;
+    let needConformation = false;
     if (localData != null) {
-        const milkData=await this.db.selectONE(MilkData,"select * from milkdatas where id=?",[localData.id]);
-        console.log(milkData,this.session);
+      const milkData = await this.db.selectONE(MilkData, "select * from milkdatas where id=?", [localData.id]);
+      console.log(milkData, this.session);
 
-        if(this.session==='Morning' && milkData.m_amount>0){
-          needConformation=true;
-        }else if(this.session==='Evening' && milkData.e_amount>0){
-          needConformation=true;
-        }
-        if(needConformation){
-          this.alertController.create({
-            message:`There is already data for farmer no ${localData.no} in ${this.session} Session.Please Choose a Option.` ,
-            buttons:[
-              {
-              text:"Add Milk",
-              handler:()=>{
-                if(this.session==='Morning' ){
-                  milkData.m_amount+=this.amount;
-                }else if(this.session==='Evening' ){
-                  milkData.e_amount+=this.amount;
+      if (this.session === 'Morning' && milkData.m_amount > 0) {
+        needConformation = true;
+      } else if (this.session === 'Evening' && milkData.e_amount > 0) {
+        needConformation = true;
+      }
+      if (needConformation) {
+        this.alertController.create({
+          message: `There is already data for farmer no ${localData.no} in ${this.session} Session.Please Choose a Option.`,
+          buttons: [
+            {
+              text: "Add Milk",
+              handler: () => {
+                if (this.session === 'Morning') {
+                  milkData.m_amount += this.amount;
+                } else if (this.session === 'Evening') {
+                  milkData.e_amount += this.amount;
                 }
                 this.updateMilkData(milkData);
               }
             },
             {
-              text:"Update Milk",
-              handler:()=>{
-                if(this.session==='Morning' ){
-                  milkData.m_amount=this.amount;
-                }else if(this.session==='Evening' ){
-                  milkData.e_amount=this.amount;
+              text: "Update Milk",
+              handler: () => {
+                if (this.session === 'Morning') {
+                  milkData.m_amount = this.amount;
+                } else if (this.session === 'Evening') {
+                  milkData.e_amount = this.amount;
                 }
                 this.updateMilkData(milkData);
               }
             },
             {
-              text:"Cancel Process",
-              role:"cancel"
+              text: "Cancel Process",
+              role: "cancel"
             }
           ]
 
-          }).then((alert)=>alert.present());
-        }else{
-          if(this.session==='Morning' ){
-            milkData.m_amount=this.amount;
-          }else if(this.session==='Evening' ){
-            milkData.e_amount=this.amount;
-          }
-          this.updateMilkData(milkData);
+        }).then((alert) => alert.present());
+      } else {
+        if (this.session === 'Morning') {
+          milkData.m_amount = this.amount;
+        } else if (this.session === 'Evening') {
+          milkData.e_amount = this.amount;
         }
+        this.updateMilkData(milkData);
+      }
 
     } else {
       const milkData = new MilkData({
@@ -271,26 +281,26 @@ export class Tab2Page implements OnInit {
   }
 
 
-  getMappedData(m: MilkData){
+  getMappedData(m: MilkData) {
 
     return {
       id: m.id,
       m_amount: m.m_amount,
       e_amount: m.e_amount,
       no: this.farmer.no,
-      date:m.date,
+      date: m.date,
       name: this.farmer.name,
       user_id: m.user_id,
       type: this.farmer.type
     };
   }
 
-  finishedSaving(){
+  finishedSaving() {
     this.milkDataSaving = false;
-          this.no = null;
-          this.amount = null;
-          this.noInput.nativeElement.focus();
-          this.updateTotal();
+    this.no = null;
+    this.amount = null;
+    this.noInput.nativeElement.focus();
+    this.updateTotal();
   }
 
   loadData() {
@@ -298,11 +308,17 @@ export class Tab2Page implements OnInit {
     if (!Helper.checkDate(this.date)) {
       alert("Please enter Date");
       return;
+
     }
+    this.center = this.centers.find(o => o.id == this.center_id);
+    // alert(this.center_id.toString());
+    // alert(this.center.name);
     this.curDate = Helper.dateINT(this.date);
     this.db.select(Farmer, "select * from farmers where center_id=?", [this.center.id])
-      .then((f) => {
-        this.farmers = f;
+      .then((f: Farmer[]) => {
+        this.farmers = f.sort((a,b)=>{
+          return a.no-b.no;
+        });
         this.db.selectLoose(`select m.id,f.no,m_amount,e_amount,name,user_id,f.type,m.date
       from milkdatas m
       join farmers f on m.user_id=f.id
@@ -320,24 +336,24 @@ export class Tab2Page implements OnInit {
 
   }
 
-  updateMilkData(milkData: MilkData){
+  updateMilkData(milkData: MilkData) {
     milkData.save()
-    .then((m: MilkData)=>{
-      const mappedData=this.getMappedData(m);
-      console.log(mappedData);
-      // const localMilkDatas=[...this.milkDatas];
-      // const index=localMilkDatas.findIndex(o => o.user_id == this.farmer.id && o.date == this.curDate);
-      const index=this.milkDatas.findIndex(o => o.user_id == this.farmer.id && o.date == this.curDate);
-      // console.log(index);
-      // localMilkDatas[index]=mappedData;
-      // this.milkDatas=localMilkDatas;
-      this.milkDatas[index]=mappedData;
-      this.finishedSaving();
+      .then((m: MilkData) => {
+        const mappedData = this.getMappedData(m);
+        console.log(mappedData);
+        // const localMilkDatas=[...this.milkDatas];
+        // const index=localMilkDatas.findIndex(o => o.user_id == this.farmer.id && o.date == this.curDate);
+        const index = this.milkDatas.findIndex(o => o.user_id == this.farmer.id && o.date == this.curDate);
+        // console.log(index);
+        // localMilkDatas[index]=mappedData;
+        // this.milkDatas=localMilkDatas;
+        this.milkDatas[index] = mappedData;
+        this.finishedSaving();
 
-    }).catch((err)=>{
-      console.log(err);
+      }).catch((err) => {
+        console.log(err);
 
-    });
+      });
   }
 
   currentEstimate() {
@@ -349,7 +365,7 @@ export class Tab2Page implements OnInit {
 
   //edit data
   async initAction(id) {
-    this.localID=id;
+    this.localID = id;
     this.milkData = await this.db.selectONE(MilkData, "select * from milkdatas where id=?", [id]);
     this.actionSheetController.create({
       header: 'Milk Data',
@@ -360,10 +376,10 @@ export class Tab2Page implements OnInit {
           icon: 'trash',
           id: 'edit-button',
           handler: async () => {
-            this.isEditing=true;
-            this.ee_amount=this.milkData.e_amount;
-            this.em_amount=this.milkData.m_amount;
-            this.isEditing=true;
+            this.isEditing = true;
+            this.ee_amount = this.milkData.e_amount;
+            this.em_amount = this.milkData.m_amount;
+            this.isEditing = true;
           }
         },
         {
@@ -372,14 +388,14 @@ export class Tab2Page implements OnInit {
           icon: 'create',
           id: 'delete-button',
           handler: () => {
-            if(confirm('Do you want to delete milk collection data?')){
+            if (confirm('Do you want to delete milk collection data?')) {
               this.milkData.del()
-              .then((r)=>{
+                .then((r) => {
 
-                const index=this.milkDatas.findIndex(o=>o.id==this.localID);
-                this.milkDatas.splice(index,1);
-                this.updateTotal();
-              });
+                  const index = this.milkDatas.findIndex(o => o.id == this.localID);
+                  this.milkDatas.splice(index, 1);
+                  this.updateTotal();
+                });
             }
 
           }
@@ -389,91 +405,98 @@ export class Tab2Page implements OnInit {
 
   }
 
-  updateData(){
-    if(this.ee_amount != undefined && this.ee_amount != null && this.em_amount != undefined && this.em_amount != null){
+  updateData() {
+    if (this.ee_amount != undefined && this.ee_amount != null && this.em_amount != undefined && this.em_amount != null) {
 
-      if(confirm('Do you want to update milk collection data')){
-        this.milkData.e_amount=this.ee_amount;
-        this.milkData.m_amount=this.em_amount;
+      if (confirm('Do you want to update milk collection data')) {
+        this.milkData.e_amount = this.ee_amount;
+        this.milkData.m_amount = this.em_amount;
         this.milkData.save()
-        .then((s: MilkData)=>{
-          const index= this.milkDatas.findIndex(o=>o.id==this.milkData.id);
-          const localFarmer= this.farmers.find(o=>o.id==this.milkData.user_id);
-          this.isEditing=false;
-          this.ee_amount=null;
-          this.em_amount=null;
-          this.milkDatas[index]={...this.milkData,no:localFarmer.no,name:localFarmer.name};
-          this.updateTotal();
+          .then((s: MilkData) => {
+            const index = this.milkDatas.findIndex(o => o.id == this.milkData.id);
+            const localFarmer = this.farmers.find(o => o.id == this.milkData.user_id);
+            this.isEditing = false;
+            this.ee_amount = null;
+            this.em_amount = null;
+            this.milkDatas[index] = { ...this.milkData, no: localFarmer.no, name: localFarmer.name };
+            this.updateTotal();
 
-        });
+          });
 
       }
-    }else{
+    } else {
       alert('Please enter all data');
     }
   }
 
   //milk data sync
-  push(){
-    if(confirm(`Do you want to sync milk collection for ${this.date} of ${this.center.name}`)){
-      const data={
-        center_id:this.center_id,
-        date:this.date,
-        data:this.milkDatas.map((o)=>{
-          return {id:o.user_id,m_amount:o.m_amount,e_amount:o.e_amount};
+  push() {
+    if (confirm(`Do you want to sync milk collection for ${this.date} of ${this.center.name}`)) {
+      const data = {
+        center_id: this.center_id,
+        date: this.date,
+        data: this.milkDatas.map((o) => {
+          return { id: o.user_id, m_amount: o.m_amount, e_amount: o.e_amount };
         })
       };
       console.log(data);
+      this.showLoading("uploading data");
 
-      this.api.post('farmers/push-milk-data',data)
-      .subscribe((res)=>{console.log(res);},(err)=>{console.log(err);});
+      this.api.post('farmers/push-milk-data', data)
+        .subscribe((res) => { console.log(res);this.loading.dismiss(); }, (err) => { console.log(err); this.loading.dismiss(); });
 
     }
   }
 
-  pull(){
-    const data={
-      center_id:this.center_id,
-      date:this.date,
+  pull() {
+    const data = {
+      center_id: this.center_id,
+      date: this.date,
     };
     console.log(data);
 
-    this.api.post('farmers/pull-milk-data',data)
-    .subscribe(async (mdatas: any[])=>{
-      for (let index = 0; index < mdatas.length; index++) {
-        const mdata = mdatas[index];
-        const localMilkData=this.milkDatas.find(o=>o.user_id==mdata.user_id);
-        console.log(localMilkData);
+    this.api.post('farmers/pull-milk-data', data)
+      .subscribe(async (mdatas: any[]) => {
+        for (let index = 0; index < mdatas.length; index++) {
+          const mdata = mdatas[index];
+          const localMilkData = this.milkDatas.find(o => o.user_id == mdata.user_id);
+          console.log(localMilkData);
 
-        if(localMilkData!=null){
-          const md=new MilkData({
-            user_id:mdata.user_id,
-            center_id:mdata.center_id,
-            date:mdata.date,
-            m_amount:mdata.m_amount,
-            e_amount:mdata.e_amount,
-            id:localMilkData.id
-          });
-          console.log(md,"old");
+          if (localMilkData != null) {
+            const md = new MilkData({
+              user_id: mdata.user_id,
+              center_id: mdata.center_id,
+              date: mdata.date,
+              m_amount: mdata.m_amount,
+              e_amount: mdata.e_amount,
+              id: localMilkData.id
+            });
+            console.log(md, "old");
 
-          await md.save();
-        }else{
-          const md=new MilkData({
-            user_id:mdata.user_id,
-            center_id:mdata.center_id,
-            date:mdata.date,
-            m_amount:mdata.m_amount,
-            e_amount:mdata.e_amount,
-          });
-          console.log(md,"new");
+            await md.save();
+          } else {
+            const md = new MilkData({
+              user_id: mdata.user_id,
+              center_id: mdata.center_id,
+              date: mdata.date,
+              m_amount: mdata.m_amount,
+              e_amount: mdata.e_amount,
+            });
+            console.log(md, "new");
 
-          await md.save();
+            await md.save();
+          }
         }
-      }
-    },(err)=>{console.log(err);});
+      }, (err) => { console.log(err);alert("Please Login"); });
   }
 
-
+  async showLoading(msg){
+    this.loading = await this.loadingCtrl.create({
+      message: msg,
+      duration: 60000,
+    });
+    this.loading.present();
+  }
 
 
 }

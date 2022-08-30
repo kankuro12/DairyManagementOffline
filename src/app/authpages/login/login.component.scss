@@ -1,0 +1,41 @@
+.image{
+  text-align: center;
+  img{
+    border-radius: 10px;
+    overflow: hidden;
+    border:3px solid white;
+    box-shadow: 0px 0px 8px 0px rgba($color: #000000, $alpha: 0.15);
+    height: 150px;
+    width:150px;
+    background: gray;
+
+  }
+}
+
+.input{
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0px 0px 8px 0px rgba($color: #000000, $alpha: 0.15);
+
+  overflow: hidden;
+  input,select{
+    border: none;
+    background: transparent;
+    padding:12px 15px;
+    outline: transparent;
+    font-size: 0.9rem;
+    width: 100%;
+  }
+
+}
+
+.btn-red{
+  border-radius: 10px;
+}
+
+.back{
+  position: absolute;
+  top:0px;
+  left:0px;
+  padding:15px;
+}

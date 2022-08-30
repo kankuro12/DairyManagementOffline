@@ -1,3 +1,7 @@
+import { SettingsService } from 'src/app/services/settings.service';
+import { ApiService } from './../../services/api.service';
+import { LoadingController } from '@ionic/angular';
+/* eslint-disable arrow-body-style */
 /* eslint-disable max-len */
 import { ElementRef } from '@angular/core';
 /* eslint-disable eqeqeq */
@@ -40,8 +44,13 @@ export class SnffatComponent implements OnInit {
   esnf: number;
   efat: number;
   isEditing = false;
+  loading: any ;
 
-  constructor(private db: SqlliteService, private actionSheetController: ActionSheetController) { }
+  constructor(private db: SqlliteService,
+    private loadingCtrl: LoadingController,
+    private api: ApiService,
+    public setting: SettingsService,
+    private actionSheetController: ActionSheetController) { }
 
   async ngOnInit() {
     const d4 = new NepaliDate(new Date());
@@ -177,6 +186,31 @@ export class SnffatComponent implements OnInit {
   }
 
 
+  push() {
+    if (confirm(`Do you want to sync milk collection for ${this.date} of ${this.center.name}`)) {
+      const data = {
+        center_id: this.center_id,
+        date: this.date,
+        data: this.snffats.map((o) => {
+          return { id: o.user_id, snf: o.snf, fat: o.fat };
+        })
+      };
+      console.log(data);
+      this.showLoading("uploading data");
+
+      this.api.post('farmers/push-snffat', data)
+        .subscribe((res) => { console.log(res);this.loading.dismiss(); }, (err) => { console.log(err); this.loading.dismiss(); });
+
+    }
+  }
+
+  async showLoading(msg){
+    this.loading = await this.loadingCtrl.create({
+      message: msg,
+      duration: 60000,
+    });
+    this.loading.present();
+  }
 
 
 }

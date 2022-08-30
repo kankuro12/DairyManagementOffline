@@ -6,11 +6,17 @@
 
 <ion-content>
   <div class="p-3">
-    <div class="col-6 py-3" [routerLink]="['/sync/center']" routerLinkActive="router-link-active" >
-        Center Data
+    <div class="row">
+      <div class="col-6" [routerLink]="['/sync/center']" routerLinkActive="router-link-active">
+        <div class="px-2 py-4 text-center shadow">
+          Center Data
+        </div>
+      </div>
+      <div class="col-6" [routerLink]="['/sync/farmer']" routerLinkActive="router-link-active">
+        <div class="px-2 text-center py-4 shadow">
+          Farmer Data
+        </div>
+      </div>
     </div>
-    <div class="col-6 py-3" [routerLink]="['/sync/farmer']" routerLinkActive="router-link-active" >
-     Farmer Data
-  </div>
   </div>
 </ion-content>
