@@ -1,4 +1,6 @@
 import { Router } from '@angular/router';
+import { BarcodeScanner } from '@awesome-cordova-plugins/barcode-scanner/ngx';
+
 /* eslint-disable eqeqeq */
 import { AuthService } from './../../services/auth.service';
 import { Component, OnInit } from '@angular/core';
@@ -11,7 +13,7 @@ import { Component, OnInit } from '@angular/core';
 export class LoginComponent implements OnInit {
   phone: string;
   password: string;
-  constructor(public auth: AuthService,private router: Router) { }
+  constructor(public auth: AuthService,private router: Router,private barcodeScanner: BarcodeScanner) { }
 
   ngOnInit() {
     this.auth.authend.subscribe((data)=>{
@@ -31,6 +33,16 @@ export class LoginComponent implements OnInit {
       return;
     }
     this.auth.login(this.phone,this.password);
+  }
+
+  link(){
+    this.barcodeScanner.scan().then(barcodeData => {
+      const data=JSON.parse(barcodeData.text);
+      alert(data.url);
+      alert(data.token);
+     }).catch(err => {
+         console.log('Error', err);
+     });
   }
 
 }

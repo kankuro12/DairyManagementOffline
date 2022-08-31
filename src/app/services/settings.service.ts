@@ -104,6 +104,9 @@ export class SettingsService {
     }
   };
 
+  setup=false;
+  url='';
+
   open=[true,true,true,false,false];
   constructor() {
     const rateTypeSTR=localStorage.getItem('rate_type');
@@ -111,6 +114,11 @@ export class SettingsService {
         this.rateType=parseInt(rateTypeSTR,10);
     }else{
       localStorage.setItem('rate_type',this.rateType.toString());
+    }
+
+    this.setup=localStorage.getItem('url')!=null;
+    if(this.setup){
+      this.url=localStorage.getItem('url');
     }
    }
 

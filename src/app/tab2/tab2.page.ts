@@ -270,7 +270,7 @@ export class Tab2Page implements OnInit {
       });
       milkData.save()
         .then((m: MilkData) => {
-          this.milkDatas.push(this.getMappedData(m));
+          this.milkDatas.unshift(this.getMappedData(m));
           this.finishedSaving();
         })
         .catch((err) => {

@@ -1,7 +1,9 @@
+import { SettingsService } from 'src/app/services/settings.service';
 /* eslint-disable quote-props */
 /* eslint-disable @typescript-eslint/naming-convention */
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from '@angular/core';
+import { Settings } from "http2";
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +11,7 @@ import { Injectable } from '@angular/core';
 export class ApiService {
   base="http://192.168.1.75:8000/api/";
   headers: HttpHeaders;
-  constructor(private client:  HttpClient) {
+  constructor(private client:  HttpClient,private setting: SettingsService) {
     this.headers = new HttpHeaders()
     .append('accept', 'application/json');
    }
@@ -24,10 +26,10 @@ export class ApiService {
 
   get(part){
     console.log(this.base+part);
-    return this.client.get(this.base+part,{ headers: this.headers });
+    return this.client.get(this.setting.url+part,{ headers: this.headers });
   }
   post(part,data){
-    return this.client.post(this.base+part,data,{ headers: this.headers });
+    return this.client.post(this.setting.url+part,data,{ headers: this.headers });
   }
 
 }
