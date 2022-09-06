@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">DairyManagement</string>
-    <string name="title_activity_main">DairyManagement</string>
+    <string name="app_name">Dairy Co.</string>
+    <string name="title_activity_main">Dairy Co.</string>
     <string name="package_name">np.com.needtechnosoft.dairymanagement</string>
     <string name="custom_url_scheme">np.com.needtechnosoft.dairymanagement</string>
 </resources>

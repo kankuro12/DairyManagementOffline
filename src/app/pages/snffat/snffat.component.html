@@ -3,14 +3,14 @@
     <ion-title>SNF FAT</ion-title>
     <ion-buttons slot="end" *ngIf="loaded" >
       <ion-button color="danger" (click)="loaded=false">Reset</ion-button>
-      <ion-button color="primary" *ngIf="setting.sync.snffat.b" (click)="push()">Upload</ion-button>
+      <ion-button color="primary" *ngIf="setting.sync.snffat.b && auth.user.per.includes('02.11')" (click)="push()">Upload</ion-button>
 
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content *ngIf="initiated">
-  <div class="p-3">
+  <div class="p-3" *ngIf="auth.user.apiper.length>0">
     <div [ngClass]="{'d-none': loaded}">
       <div class="row m-0">
         <div class="col-md-3 col-6" *ngIf="centers.length>1">
@@ -55,9 +55,9 @@
       <hr>
       <div>
         <div class="row m-0">
-          <div class="col-4 p-0"><input class="form-control no-border-radius" placeholder="Farmer No" #noInput [(ngModel)]="no" type="number" ></div>
-          <div class="col-4 p-0"><input class="form-control no-border-radius" placeholder="FAT" #fatInput [(ngModel)]="fat" type="number" ></div>
-          <div class="col-4 p-0"><input class="form-control no-border-radius" placeholder="SNF" #snfInput [(ngModel)]="snf" type="number" (keypress)="check($event,1)" ></div>
+          <div class="col-4 p-0"><input class="form-control no-border-radius big-font" placeholder="No" #noInput [(ngModel)]="no" type="number" ></div>
+          <div class="col-4 p-0"><input class="form-control no-border-radius big-font" placeholder="FAT" #fatInput [(ngModel)]="fat" type="number" ></div>
+          <div class="col-4 p-0"><input class="form-control no-border-radius big-font" placeholder="SNF" #snfInput [(ngModel)]="snf" type="number" (keypress)="check($event,1)" ></div>
           <div class="col-12 px-0 pt-2"><button class="btn btn-success w-100" (click)="saveData()">Save Data</button></div>
         </div>
       </div>
@@ -86,6 +86,9 @@
       </table>
     </div>
   </div>
+  <h5 class="p-5"  *ngIf="auth.user.apiper.length===0">
+      No Permission Given
+  </h5>
   <ion-modal [isOpen]="isEditing">
     <ng-template>
       <ion-header>

@@ -1,3 +1,4 @@
+import { AuthService } from './../services/auth.service';
 /* eslint-disable arrow-body-style */
 import { ApiService } from './../services/api.service';
 import { SettingsService } from 'src/app/services/settings.service';
@@ -69,6 +70,7 @@ export class Tab2Page implements OnInit {
     public setting: SettingsService,
     private loadingCtrl: LoadingController,
     private api: ApiService,
+    public auth: AuthService,
     private actionSheetController: ActionSheetController) {
     const localDate = new Date();
     this.session = localDate.getHours() < 2 ? 'Morning' : 'Evening';
@@ -119,15 +121,19 @@ export class Tab2Page implements OnInit {
 
   }
   async ngOnInit() {
-    this.centers = await this.db.select(Center, "select id,name from centers", []);
-    this.rates = await this.db.select(Rate, "select id,name,rate from rates", []);
-    if (this.centers.length > 0) {
-      this.center = this.centers[0];
-      this.center_id = this.center.id;
-    }
-    if (this.rates.length > 0) {
-      this.rate = this.rates[0];
-      this.rate_id = this.rate.id;
+    if(this.auth.user.apiper.length>0){
+
+      const apiPer="("+this.auth.user.apiper.join(',')+")";
+      this.centers = await this.db.select(Center, `select id,name from centers where id in ${apiPer}`, []);
+      this.rates = await this.db.select(Rate, "select id,name,rate from rates", []);
+      if (this.centers.length > 0) {
+        this.center = this.centers[0];
+        this.center_id = this.center.id;
+      }
+      if (this.rates.length > 0) {
+        this.rate = this.rates[0];
+        this.rate_id = this.rate.id;
+      }
     }
 
     this.inititated = true;

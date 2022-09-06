@@ -12,31 +12,32 @@ export class SettingsService {
       title:'Centers',
       path: '/pages/centers',
       active: true,
+      needlogin: false,
 
     },
     {
       title:'Rates',
       path: '/pages/rates',
       active: false,
-
+      needlogin: true,
     },
     {
       title:'Reports',
       path: '/reports',
       active: false,
-
+      needlogin: true,
     },
     {
       title:'Setting',
       path: '/pages/setting',
       active: false,
-
+      needlogin: true,
     },
     {
       title:'Sync',
       path: '/sync',
       active: true,
-
+      needlogin: true,
     }
   ];
   tabs=[
@@ -82,7 +83,13 @@ export class SettingsService {
       open: false,
 
     },
+    {
+      title:'Farmers',
+      tab:'farmers',
+      icon:'triangle',
+      open: true,
 
+    },
   ];
   enableSync=true;
   sync={
@@ -100,10 +107,14 @@ export class SettingsService {
     },
     farmer:{
       f:true,
-      b:true
+      b:false
     }
   };
 
+
+
+
+  centers=[];
   setup=false;
   url='';
 
@@ -119,6 +130,10 @@ export class SettingsService {
     this.setup=localStorage.getItem('url')!=null;
     if(this.setup){
       this.url=localStorage.getItem('url');
+    }
+    const centersSTR=localStorage.getItem('centers');
+    if(centersSTR!=null){
+      this.centers=JSON.parse(centersSTR);
     }
    }
 

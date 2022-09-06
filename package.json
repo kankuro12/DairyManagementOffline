@@ -21,7 +21,7 @@
     "@angular/router": "^14.0.0",
     "@awesome-cordova-plugins/barcode-scanner": "^5.44.0",
     "@awesome-cordova-plugins/sqlite": "^5.44.0",
-    "@capacitor/android": "4.0.1",
+    "@capacitor/android": "4.1.0",
     "@capacitor/app": "4.0.1",
     "@capacitor/core": "4.0.1",
     "@capacitor/haptics": "4.0.1",

@@ -1,9 +1,12 @@
+import { HttpClient } from '@angular/common/http';
+import { SettingsService } from 'src/app/services/settings.service';
 import { Router } from '@angular/router';
 import { BarcodeScanner } from '@awesome-cordova-plugins/barcode-scanner/ngx';
 
 /* eslint-disable eqeqeq */
 import { AuthService } from './../../services/auth.service';
 import { Component, OnInit } from '@angular/core';
+import { type } from 'os';
 
 @Component({
   selector: 'app-login',
@@ -11,9 +14,12 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
-  phone: string;
-  password: string;
-  constructor(public auth: AuthService,private router: Router,private barcodeScanner: BarcodeScanner) { }
+  phone= '';
+  password= '';
+  constructor(public auth: AuthService,private router: Router,
+    private barcodeScanner: BarcodeScanner,
+    public setting: SettingsService,
+    private client: HttpClient) { }
 
   ngOnInit() {
     this.auth.authend.subscribe((data)=>{
@@ -24,22 +30,31 @@ export class LoginComponent implements OnInit {
   }
 
   login(){
-    if(this.phone==undefined || this.phone.length<10){
+    if( this.phone.length<10){
       alert('Please enter phone no');
       return;
     }
-    if(this.password==undefined || this.password.length<10){
-      alert('Please enter phone no');
+    if(this.password==undefined ){
+      alert('Please enter password');
       return;
     }
-    this.auth.login(this.phone,this.password);
+    this.auth.login(this.phone.toString(),this.password);
   }
 
   link(){
     this.barcodeScanner.scan().then(barcodeData => {
       const data=JSON.parse(barcodeData.text);
-      alert(data.url);
-      alert(data.token);
+      const pin=prompt('Please enter connection pin');
+      this.client.post(data.url+'barcode-setup',{pin,token:data.token})
+      .subscribe((res: any)=>{
+        if(res.status){
+          this.setting.url=data.url;
+          this.setting.setup=true;
+          localStorage.setItem('url',data.url);
+        }else{
+          alert(res.message);
+        }
+      });
      }).catch(err => {
          console.log('Error', err);
      });

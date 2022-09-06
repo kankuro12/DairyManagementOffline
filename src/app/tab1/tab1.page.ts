@@ -1,6 +1,8 @@
+/* eslint-disable eqeqeq */
 import { SettingsService } from 'src/app/services/settings.service';
 import { Component } from '@angular/core';
 import { SqlliteService } from '../services/sqllite.service';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-tab1',
@@ -9,7 +11,10 @@ import { SqlliteService } from '../services/sqllite.service';
 })
 export class Tab1Page {
 
-  constructor(private db: SqlliteService,public setting: SettingsService) {}
+  constructor(
+    private db: SqlliteService,
+    public auth: AuthService,
+    public setting: SettingsService) {}
   del(){
     this.db.run('delete from milkamounts where id>0')
     .then((res)=>{
@@ -21,6 +26,16 @@ export class Tab1Page {
   }
 
   activeParts(datas){
-    return datas.filter(o=>o.active);
+    const filtered=[];
+    datas.filter(o=>o.active).forEach(data => {
+      if(data.needlogin ){
+          if(this.auth.loginMode==1){
+            filtered.push(data);
+          }
+      }else{
+        filtered.push(data);
+      }
+    });
+    return filtered;
   }
 }

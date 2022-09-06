@@ -1,3 +1,4 @@
+import { AuthService } from './../../services/auth.service';
 import { SettingsService } from 'src/app/services/settings.service';
 import { ApiService } from './../../services/api.service';
 import { LoadingController } from '@ionic/angular';
@@ -49,20 +50,26 @@ export class SnffatComponent implements OnInit {
   constructor(private db: SqlliteService,
     private loadingCtrl: LoadingController,
     private api: ApiService,
+    public auth: AuthService,
     public setting: SettingsService,
     private actionSheetController: ActionSheetController) { }
 
   async ngOnInit() {
-    const d4 = new NepaliDate(new Date());
-    this.date = d4.format('YYYY-MM-DD');
-    this.centers = await this.db.select(Center, "select id,name from centers", []);
+    if(this.auth.user.apiper.length>0){
 
-    if (this.centers.length > 0) {
-      this.center = this.centers[0];
-      this.center_id = this.center.id;
+      const d4 = new NepaliDate(new Date());
+      this.date = d4.format('YYYY-MM-DD');
+      const apiPer="("+this.auth.user.apiper.join(',')+")";
+
+      this.centers = await this.db.select(Center, `select id,name from centers where id in ${apiPer}`, []);
+
+      if (this.centers.length > 0) {
+        this.center = this.centers[0];
+        this.center_id = this.center.id;
+      }
+
+      this.initiated = true;
     }
-
-    this.initiated = true;
   }
 
   canload() {
@@ -98,7 +105,7 @@ export class SnffatComponent implements OnInit {
     this.snffat = new SnfFat({ user_id: this.farmer.id, snf: this.snf, fat: this.fat, date: Helper.dateINT(this.date) });
     this.snffat.save()
       .then((s: SnfFat) => {
-        this.snffats.push({ ...s, no: this.farmer.no, name: this.farmer.name });
+        this.snffats.unshift({ ...s, no: this.farmer.no, name: this.farmer.name });
         this.snf = null;
         this.fat = null;
         this.no = null;
