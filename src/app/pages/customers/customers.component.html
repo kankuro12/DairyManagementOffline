@@ -1,0 +1,31 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-back-button slot="start"></ion-back-button>
+    <ion-title>
+      Customers
+    </ion-title>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <table class="table table-bordered">
+    <tr>
+      <th>
+        Phone
+      </th>
+      <th>
+        Name
+      </th>
+    </tr>
+    <tr *ngFor="let customer of customers">
+      <td>
+        {{customer.phone}}
+      </td>
+      <td>
+        {{customer.name}}
+      </td>
+    </tr>
+  </table>
+
+</ion-content>

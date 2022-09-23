@@ -1,3 +1,5 @@
+import { SellitemreportComponent } from './sellitemreport/sellitemreport.component';
+import { CustomersComponent } from './customers/customers.component';
 import { SettingComponent } from './setting/setting.component';
 import { SnffatComponent } from './snffat/snffat.component';
 import { SingleAdvanceComponent } from './farmer/detail/single-advance/single-advance.component';
@@ -20,7 +22,9 @@ import { PagesRoutingModule } from './pages.routing.module';
     SingleMilkComponentComponent,
     SingleAdvanceComponent,
     SnffatComponent,
-    SettingComponent
+    SettingComponent,
+    CustomersComponent,
+    SellitemreportComponent
   ],
   imports: [
     CommonModule,

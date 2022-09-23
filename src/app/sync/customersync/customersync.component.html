@@ -1,0 +1,23 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      Customer  Data
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <div class="p-3">
+    <button *ngIf="pulling===1" class="w-100 btn btn-success" (click)="importData()">
+      Pull Customer Data
+    </button>
+
+    <div *ngIf="pulling>1" class="text-center">
+      <ion-spinner></ion-spinner> <br>
+      {{pulling===3?'Saving':'Fetching'}} Data
+      <div class="text-danger">
+        <ion-icon name="alert-circle"></ion-icon> <br>
+        Please do not close application while syncing.
+      </div>
+    </div>
+  </div>
+</ion-content>

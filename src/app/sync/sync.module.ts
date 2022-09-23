@@ -10,6 +10,7 @@ import { IonicModule } from '@ionic/angular';
 import { SyncPageRoutingModule } from './sync-routing.module';
 
 import { SyncPage } from './sync.page';
+import { CustomersyncComponent } from './customersync/customersync.component';
 
 @NgModule({
   imports: [
@@ -18,6 +19,6 @@ import { SyncPage } from './sync.page';
     IonicModule,
     SyncPageRoutingModule
   ],
-  declarations: [SyncPage,CentersyncComponent,MilkdatasyncComponent,FarmersyncComponent]
+  declarations: [SyncPage,CentersyncComponent,MilkdatasyncComponent,FarmersyncComponent,CustomersyncComponent]
 })
 export class SyncPageModule {}

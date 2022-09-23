@@ -81,6 +81,57 @@ export default [
     user_id integer,
     FOREIGN KEY(user_id) REFERENCES farmers(id)
   );
+  `,
   `
+  create table IF NOT EXISTS customers(
+    id INTEGER PRIMARY KEY,
+    name text,
+    phone varchar(15) UNIQUE
+  );
+  `,
+  `
+  create table IF NOT EXISTS chalanitems(
+    id INTEGER PRIMARY KEY,
+    title TEXT,
+    item_id INTEGER,
+    rate decimal(10,2),
+    date INTEGER
 
+  );
+  `,
+  `
+  create table IF NOT EXISTS chalansellitems(
+    id INTEGER PRIMARY KEY,
+    title TEXT,
+    item_id INTEGER,
+    rate decimal(10,2),
+    date INTEGER,
+    phone text
+  );
+  `,
+  `
+  create table IF NOT EXISTS chalanpayments(
+    id INTEGER PRIMARY KEY,
+    amount decimal(10,2),
+    date INTEGER,
+    phone text
+  );
+  `,
+  `ALTER TABLE chalansellitems
+  ADD qty decimal(10,2);`
+  ,
+  `ALTER TABLE chalansellitems
+  ADD sync integer default 0;`
+  ,
+  `ALTER TABLE chalanitems
+  ADD user_id integer;`
+  ,
+  `ALTER TABLE chalansellitems
+  ADD user_id integer;`
+  ,
+  `ALTER TABLE chalanpayments
+  ADD user_id integer;`
+  ,
+  `ALTER TABLE chalanpayments
+  ADD sync integer default 0;`
 ];

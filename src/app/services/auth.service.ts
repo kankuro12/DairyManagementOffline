@@ -35,6 +35,7 @@ export class AuthService {
           this.user.times=this.user.time.map(o=> parseInt(o.replace(':',''),10));
           const userData = {
             name: this.user.name,
+            id: this.user.id,
             phone: this.user.phone,
             password: md5(password).toString(),
             apiper:this.user.apiper,
@@ -43,6 +44,7 @@ export class AuthService {
           window.localStorage.setItem('_xcbitetra', JSON.stringify(userData));
           this.loading = false;
           this.logged = true;
+          console.log(res.token);
           this.api.setHeader(res.token);
           this.authend.emit(true);
 
@@ -75,6 +77,7 @@ offlineLogin(phone, password){
       this.loading =false;
       this.user={
         name:userData.name,
+        id:userData.id,
         phone:userData.phone,
         apiper:userData.apiper,
         times:userData.times,

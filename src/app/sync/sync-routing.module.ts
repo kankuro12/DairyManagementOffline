@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { SyncPage } from './sync.page';
+import { CustomersyncComponent } from './customersync/customersync.component';
 
 const routes: Routes = [
   {
@@ -12,7 +13,8 @@ const routes: Routes = [
 
   },
   {path:'farmer',component:FarmersyncComponent},
-  {path:'center',component:CentersyncComponent}
+  {path:'center',component:CentersyncComponent},
+  {path:'customer',component:CustomersyncComponent},
 ];
 
 @NgModule({

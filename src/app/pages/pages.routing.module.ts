@@ -1,3 +1,5 @@
+import { SellitemreportComponent } from './sellitemreport/sellitemreport.component';
+import { CustomersComponent } from './customers/customers.component';
 import { SettingComponent } from './setting/setting.component';
 import { SnffatComponent } from './snffat/snffat.component';
 import { NgModule } from '@angular/core';
@@ -13,6 +15,14 @@ const routes: Routes = [
   {
     path: 'centers',
     component: CentersComponent
+  },
+  {
+    path: 'customers',
+    component: CustomersComponent
+  },
+  {
+    path: 'sellitemreport',
+    component: SellitemreportComponent
   },
   {
     path: 'rates',

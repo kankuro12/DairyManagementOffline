@@ -14,8 +14,8 @@ import { type } from 'os';
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
-  phone= '';
-  password= '';
+  phone= '9842086488';
+  password= 'admin123';
   constructor(public auth: AuthService,private router: Router,
     private barcodeScanner: BarcodeScanner,
     public setting: SettingsService,

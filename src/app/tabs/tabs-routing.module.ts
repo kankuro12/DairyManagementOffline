@@ -1,3 +1,4 @@
+import { SellitemPageModule } from './../sellitem/sellitem.module';
 import { FarmerReportComponent } from './../report/farmer-report/farmer-report.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
@@ -28,6 +29,10 @@ const routes: Routes = [
       {
         path: 'payment',
         loadChildren: () => import('../payment/payment.module').then(m => m.PaymentPageModule)
+      },
+      {
+        path: 'sellitem',
+        loadChildren: () => import('../sellitem/sellitem.module').then(m => m.SellitemPageModule)
       },
       {
         path: 'report',

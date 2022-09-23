@@ -38,6 +38,10 @@ const routes: Routes = [
   {
     path:'login',
     component:LoginComponent
+  },
+  {
+    path: 'sellitem',
+    loadChildren: () => import('./sellitem/sellitem.module').then( m => m.SellitemPageModule)
   }
 ];
 @NgModule({

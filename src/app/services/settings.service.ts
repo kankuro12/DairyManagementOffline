@@ -16,6 +16,13 @@ export class SettingsService {
 
     },
     {
+      title:'Customers',
+      path: '/pages/customers',
+      active: true,
+      needlogin: false,
+
+    },
+    {
       title:'Rates',
       path: '/pages/rates',
       active: false,
@@ -44,6 +51,13 @@ export class SettingsService {
     {
       title:'Home',
       tab:'tab1',
+      icon:'triangle',
+      open: true,
+
+    },
+    {
+      title:'SellItem',
+      tab:'sellitem',
       icon:'triangle',
       open: true,
 
