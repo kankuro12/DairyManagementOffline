@@ -9,7 +9,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content *ngIf="initiated">
+<ion-content *ngIf="initiated && auth.hasPermission(['02.11'])" >
   <div class="p-3" *ngIf="auth.user.apiper.length>0">
     <div [ngClass]="{'d-none': loaded}">
       <div class="row m-0">
@@ -43,7 +43,7 @@
 
       </div>
     </div>
-    <div *ngIf="loaded">
+    <div *ngIf="loaded ">
       <div class="d-flex justify-content-between">
         <span>
           {{center.name}}
@@ -52,8 +52,8 @@
           {{date}}
         </span>
       </div>
-      <hr>
-      <div>
+      <hr *ngIf="today">
+      <div *ngIf="today">
         <div class="row m-0">
           <div class="col-4 p-0"><input class="form-control no-border-radius big-font" placeholder="No" #noInput [(ngModel)]="no" type="number" ></div>
           <div class="col-4 p-0"><input class="form-control no-border-radius big-font" placeholder="FAT" #fatInput [(ngModel)]="fat" type="number" ></div>
@@ -110,5 +110,10 @@
       </ion-content>
     </ng-template>
   </ion-modal>
+</ion-content>
+<ion-content>
+  <h6 class="p-2"  *ngIf=" !(auth.hasPermission(['02.11']))">
+    You Dont Have permssion to entry Snf Fat
+  </h6>
 
 </ion-content>

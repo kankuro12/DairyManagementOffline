@@ -2,7 +2,7 @@ import { AuthService } from './../services/auth.service';
 /* eslint-disable arrow-body-style */
 import { ApiService } from './../services/api.service';
 import { SettingsService } from 'src/app/services/settings.service';
-import { ActionSheetController, LoadingController } from '@ionic/angular';
+import { ActionSheetController, LoadingController, Platform } from '@ionic/angular';
 /* eslint-disable eqeqeq */
 import { AlertController } from '@ionic/angular';
 /* eslint-disable @typescript-eslint/no-unused-expressions */
@@ -61,8 +61,9 @@ export class Tab2Page implements OnInit {
 
   loading: any ;
 
-
-
+  today=false;
+  todayDate: number;
+  undertime= false;
 
   constructor(private db: SqlliteService,
     private changeDetection: ChangeDetectorRef,
@@ -71,12 +72,14 @@ export class Tab2Page implements OnInit {
     private loadingCtrl: LoadingController,
     private api: ApiService,
     public auth: AuthService,
+
     private actionSheetController: ActionSheetController) {
+
     const localDate = new Date();
-    this.session = localDate.getHours() < 2 ? 'Morning' : 'Evening';
+    this.session = localDate.getHours() < 12 ? 'Morning' : 'Evening';
     const d4 = new NepaliDate(localDate);
     this.date = d4.format('YYYY-MM-DD');
-
+    this.todayDate= Helper.dateINT(this.date);
   }
 
   async updateTotal() {
@@ -137,7 +140,22 @@ export class Tab2Page implements OnInit {
     }
 
     this.inititated = true;
+    this.checkUnderTime();
+  }
 
+  checkUnderTime(){
+    const localDate = new Date();
+
+    const timeStamp=localDate.getHours()*100+localDate.getMinutes();
+    if(timeStamp<1200){
+      this.undertime= this.auth.user.times[0]<=timeStamp && this.auth.user.times[1]>=timeStamp;
+    }else{
+      this.undertime= this.auth.user.times[2]<=timeStamp && this.auth.user.times[3]>=timeStamp;
+    }
+    console.log(this.auth.user.times,timeStamp,this.undertime);
+    setTimeout(() => {
+      this.checkUnderTime();
+    }, 600000);
   }
 
   isNumber(num) {
@@ -320,6 +338,7 @@ export class Tab2Page implements OnInit {
     // alert(this.center_id.toString());
     // alert(this.center.name);
     this.curDate = Helper.dateINT(this.date);
+    this.today=this.curDate===this.todayDate;
     this.db.select(Farmer, "select * from farmers where center_id=?", [this.center.id])
       .then((f: Farmer[]) => {
         this.farmers = f.sort((a,b)=>{

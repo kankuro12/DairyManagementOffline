@@ -13,14 +13,14 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <div *ngIf="inititated && auth.user.apiper.length>0">
-    <div class="p-3"  style="position: sticky;top:0px;background: white;">
+  <div *ngIf="inititated  && auth.hasPermission(['02.09'])">
+    <div class="p-3"  style="position: sticky;top:0px;background: white;" *ngIf="auth.user.apiper.length>0">
       <div class="d-flex justify-content-between  " *ngIf="loaded">
         <strong>{{center.name}}</strong>
         <strong>{{session}}</strong>
         <strong>{{date}}</strong>
       </div>
-      <div [ngClass]="{'d-none': loaded}">
+      <div [ngClass]="{'d-none': loaded}" >
         <div class="row m-0">
           <div class="col-md-3 col-6" *ngIf="centers.length>1">
             <strong>Center</strong>
@@ -58,8 +58,8 @@
 
         </div>
       </div>
-      <hr>
-      <div class="d-flex " *ngIf="loaded">
+      <hr *ngIf="today  && undertime">
+      <div class="d-flex " *ngIf="loaded && today && undertime" >
         <div style="flex:2;">
           <input type="number" #noinput placeholder="No" class="form-control no-border-radius no-outline big-font"
             [(ngModel)]="no">
@@ -161,6 +161,10 @@
 
     </div>
 
+    <div class="px-3" *ngIf="auth.user.apiper.length===0">
+      No Centers permission. Please contact administrator.
+    </div>
+
     <ion-modal [isOpen]="isModalOpen">
       <ng-template>
         <ion-header>
@@ -219,7 +223,7 @@
   </ion-modal>
   </div>
 
-  <h5 class="p-5"  *ngIf="auth.user.apiper.length===0">
-    No Permission Given
-</h5>
+  <h6 class="p-2"  *ngIf=" !(auth.hasPermission(['02.09']))">
+    You Dont Have permssion to manage manage milk collection
+</h6>
 </ion-content>

@@ -8,7 +8,10 @@ import { Component } from '@angular/core';
 })
 export class TabsPage {
 
-  constructor(public setting: SettingsService) {}
+  constructor(public setting: SettingsService
+    ) {
+
+    }
 
   filter()
   {

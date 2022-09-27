@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/prefer-for-of */
 /* eslint-disable eqeqeq */
 import { ApiService } from './api.service';
 import { EventEmitter, Injectable } from '@angular/core';
@@ -32,14 +33,15 @@ export class AuthService {
         .subscribe((res: any) => {
           console.log(res);
           this.user = res;
-          this.user.times=this.user.time.map(o=> parseInt(o.replace(':',''),10));
+          this.user.times = this.user.time.map(o => parseInt(o.replace(':', ''), 10));
           const userData = {
             name: this.user.name,
             id: this.user.id,
             phone: this.user.phone,
             password: md5(password).toString(),
-            apiper:this.user.apiper,
-            times:this.user.times,
+            apiper: this.user.apiper,
+            times: this.user.times,
+            per: this.user.per
           };
           window.localStorage.setItem('_xcbitetra', JSON.stringify(userData));
           this.loading = false;
@@ -49,51 +51,73 @@ export class AuthService {
           this.authend.emit(true);
 
         }, (err) => {
-          if(err.status==0){
-            this.offlineLogin(phone,password);
-          }else{
+          if (err.status == 0) {
+            this.offlineLogin(phone, password);
+          } else {
             alert('Wrong phone or password');
-            this.loading =false;
+            this.loading = false;
           }
         });
     } else {
-      this.offlineLogin(phone,password);
+      this.offlineLogin(phone, password);
     }
   }
 
 
-offlineLogin(phone, password){
-  const userSTR = window.localStorage.getItem('_xcbitetra');
-  if (userSTR == null || userSTR == undefined) {
-    alert('Wrong phone or password');
-    this.loading =false;
-
-  } else {
-    const userData = JSON.parse(userSTR);
-    const hash = md5(password).toString();
-    if (userData.phone == phone && userData.password == hash) {
-      this.logged = true;
-      this.loginMode = 2;
-      this.loading =false;
-      this.user={
-        name:userData.name,
-        id:userData.id,
-        phone:userData.phone,
-        apiper:userData.apiper,
-        times:userData.times,
-        per:[],
-
-      };
-      this.authend.emit(true);
-    } else {
+  offlineLogin(phone, password) {
+    const userSTR = window.localStorage.getItem('_xcbitetra');
+    if (userSTR == null || userSTR == undefined) {
       alert('Wrong phone or password');
+      this.loading = false;
+
+    } else {
+      const userData = JSON.parse(userSTR);
+      const hash = md5(password).toString();
+      if (userData.phone == phone && userData.password == hash) {
+        this.logged = true;
+        this.loginMode = 2;
+        this.loading = false;
+        this.user = {
+          name: userData.name,
+          id: userData.id,
+          phone: userData.phone,
+          apiper: userData.apiper,
+          times: userData.times,
+          per: userData.per
+
+        };
+        this.authend.emit(true);
+      } else {
+        alert('Wrong phone or password');
+      }
     }
   }
-}
 
-  getAuthStatus(){
+  getAuthStatus() {
     return this.logged;
   }
 
+  hasPermission(permissions: string[]) {
+    for (let index = 0; index < permissions.length; index++) {
+      const permission = permissions[index];
+      if (this.user.per.includes(permission)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  hasAllPermision(permissions: string[]) {
+    let hasPer = true;
+    for (let index = 0; index < permissions.length; index++) {
+      const permission = permissions[index];
+      if (!this.user.per.includes(permission)) {
+        hasPer = false;
+        break;
+      }
+    }
+    return hasPer;
+
+  }
 
 }

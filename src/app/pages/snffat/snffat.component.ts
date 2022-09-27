@@ -47,6 +47,9 @@ export class SnffatComponent implements OnInit {
   isEditing = false;
   loading: any ;
 
+  todayDate: number;
+  today=false;
+
   constructor(private db: SqlliteService,
     private loadingCtrl: LoadingController,
     private api: ApiService,
@@ -59,6 +62,8 @@ export class SnffatComponent implements OnInit {
 
       const d4 = new NepaliDate(new Date());
       this.date = d4.format('YYYY-MM-DD');
+      this.todayDate=Helper.dateINT(this.date);
+
       const apiPer="("+this.auth.user.apiper.join(',')+")";
 
       this.centers = await this.db.select(Center, `select id,name from centers where id in ${apiPer}`, []);
@@ -77,6 +82,7 @@ export class SnffatComponent implements OnInit {
   }
   async loadData() {
     const curDate = Helper.dateINT(this.date);
+    this.today= curDate==this.todayDate;
     this.farmers = await this.db.select(Farmer, 'select * from farmers where center_id=?', [this.center_id]);
     this.snffats = await this.db.selectLoose("select s.*,f.no,f.name from snffats s join farmers f on f.id=s.user_id where date=?", [curDate]);
     console.log(this.snffats, "data");

@@ -51,27 +51,27 @@ export class SettingsService {
     {
       title:'Home',
       tab:'tab1',
-      icon:'triangle',
+      icon:'home',
       open: true,
 
     },
     {
       title:'SellItem',
       tab:'sellitem',
-      icon:'triangle',
+      icon:'cash',
       open: true,
 
     },
     {
       title:'Milk',
       tab:'tab2',
-      icon:'triangle',
+      icon:'beaker',
       open: true,
 
     }, {
       title:'Fat SNF',
       tab:'snffat',
-      icon:'triangle',
+      icon:'calculator',
       open: true,
 
     },
@@ -100,7 +100,7 @@ export class SettingsService {
     {
       title:'Farmers',
       tab:'farmers',
-      icon:'triangle',
+      icon:'people',
       open: true,
 
     },

@@ -8,7 +8,102 @@
       Sell item Report
     </ion-title>
     <ion-buttons slot="end">
-      <ion-button color="primary" >Upload</ion-button>
+      <ion-button color="primary" *ngIf="canupload" (click)="upload()" >Upload</ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
+
+<ion-content>
+  <div class="p-3">
+    <div class="row">
+      <div class="col-6">
+        <label>Date</label>
+        <input type="text" class="form-control" [(ngModel)]="date">
+      </div>
+      <div class="col-6 d-flex align-items-end">
+        <button class="btn btn-primary w-100" (click)="loadData()">Load Data</button>
+      </div>
+    </div>
+  </div>
+  <div class="p-3">
+    <div class="row mx-0 mb-2 shadow">
+      <div class="col-6 p-0">
+        <button class="btn w-100 no-border-radius" [ngClass]="{'btn-selected': sellingType===1}"
+          (click)="sellingType=1"> Sales</button>
+      </div>
+      <div class="col-6 p-0">
+        <button class="btn w-100 no-border-radius" [ngClass]="{'btn-selected': sellingType===2}"
+          (click)="sellingType=2"> Payment</button>
+      </div>
+      <div class="col-6 p-0"></div>
+    </div>
+    <div [ngClass]="{'d-none': sellingType===1}">
+      <table class="table">
+        <tr>
+          <th>
+            Name
+          </th>
+          <th>
+            Amount
+          </th>
+          <th>
+
+          </th>
+        </tr>
+        <tr *ngFor="let payment of payments">
+          <th>
+            {{getName(payment.phone)}}
+          </th>
+          <td>
+            {{payment.amount}}
+          </td>
+          <td>
+            {{payment.sync?'✓':''}}
+          </td>
+        </tr>
+      </table>
+
+    </div>
+
+    <div [ngClass]="{'d-none': sellingType===2}">
+      <table class="table">
+        <tr>
+          <th>
+            Name
+          </th>
+          <th>
+            Item
+          </th>
+          <th>
+            Rate
+          </th>
+          <th>
+            Qty
+          </th>
+          <th>
+            Sync
+          </th>
+        </tr>
+        <tr *ngFor="let sellItem of sellItems">
+          <th>
+            {{getName(sellItem.phone)}}
+          </th>
+          <td>
+            {{sellItem.title}}
+          </td>
+          <td>
+            {{sellItem.rate}}
+          </td>
+          <td>
+            {{sellItem.qty}}
+          </td>
+          <td>
+            {{sellItem.sync?'✓':''}}
+          </td>
+        </tr>
+      </table>
+
+    </div>
+
+  </div>
+</ion-content>

@@ -1,3 +1,4 @@
+import { AuthService } from './../../services/auth.service';
 import { Customer } from './../../database/models/customer.modal';
 import { ApiService } from './../../services/api.service';
 import { Component, OnInit } from '@angular/core';
@@ -12,7 +13,7 @@ export class CustomersyncComponent implements OnInit {
   total = 0;
   current = 0;
   progress = 0;
-  constructor(private api: ApiService) { }
+  constructor(private api: ApiService,private auth: AuthService) { }
 
   ngOnInit() {}
   async importData() {

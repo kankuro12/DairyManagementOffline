@@ -32,6 +32,7 @@ export class SellitemPage implements OnInit {
   phone: number;
   selling = false;
   customerLoaded = false;
+  total=0;
 
   //calculations
   rate: number;
@@ -43,14 +44,25 @@ export class SellitemPage implements OnInit {
 
   //payment
   paymentAmount: number;
+  //permission
+  hasPermission= false;
 
-  constructor(private db: SqlliteService, private api: ApiService, private auth: AuthService) { }
+  //customer
+  addingCustomer=false;
+  addName= '';
+  addPhone= '';
+  addLock=false;
+
+  constructor(private db: SqlliteService, private api: ApiService, public auth: AuthService) { }
   async ngOnInit() {
-    this.customers = await this.db.select(Customer, "select * from customers");
-    const localDate = new Date();
-    const d4 = new NepaliDate(localDate);
-    this.date = d4.format('YYYY-MM-DD');
-    this.curDate = Helper.dateINT(this.date);
+    this.hasPermission=this.auth.hasPermission(['15.06','15.07']);
+    if(this.hasPermission){
+      this.customers = await this.db.select(Customer, "select * from customers");
+      const localDate = new Date();
+      const d4 = new NepaliDate(localDate);
+      this.date = d4.format('YYYY-MM-DD');
+      this.curDate = Helper.dateINT(this.date);
+    }
 
   }
 
@@ -62,19 +74,23 @@ export class SellitemPage implements OnInit {
   async pullData() {
     this.api.post('employee-chalan', {
       date: this.date
-    }).subscribe(async (chalanItems: ChalanItem[]) => {
+    }).subscribe(async (res: any) => {
 
-      for (let index = 0; index < chalanItems.length; index++) {
-        const chalanItem = chalanItems[index];
-        chalanItem.date = this.curDate;
-        chalanItem.user_id = this.auth.user.id;
-        const f = new ChalanItem(chalanItem);
-        await f.save();
-        this.items.push(f);
-        this.loading = false;
-        this.showInterface();
-
+      if(res.status){
+        const chalanItems=res.data;
+        for (let index = 0; index < chalanItems.length; index++) {
+          const chalanItem = chalanItems[index];
+          chalanItem.date = this.curDate;
+          chalanItem.user_id = this.auth.user.id;
+          const f = new ChalanItem(chalanItem);
+          await f.save();
+          this.items.push(f);
+          this.showInterface();
+        }
+      }else{
+        alert('No chalan found for date '+this.date);
       }
+      this.loading = false;
 
     }, (err) => {
       this.loading = false;
@@ -102,6 +118,7 @@ export class SellitemPage implements OnInit {
     this.payments = await this.db.select(ChalanPayment, 'select * from chalanpayments where phone=? and date=? and user_id=?', [this.phone, this.curDate, this.auth.user.id]);
     this.customerLoaded = true;
     this.resetItem();
+    this.calculateTotal();
 
   }
   loadItemData() {
@@ -123,6 +140,8 @@ export class SellitemPage implements OnInit {
         sellitem.del()
           .then(() => {
             this.sellItems.splice(index, 1);
+            this.calculateTotal();
+
           });
       }
     }
@@ -146,6 +165,8 @@ export class SellitemPage implements OnInit {
     sellItem.save()
       .then((i: ChalanSellItem) => {
         this.sellItems.push(i);
+        this.calculateTotal();
+
         this.resetItem();
       });
   }
@@ -174,7 +195,7 @@ export class SellitemPage implements OnInit {
     p.save()
     .then((payment: ChalanPayment)=>{
       this.payments.push(payment);
-      this.amount=null;
+      this.paymentAmount=null;
     });
   }
   delPayment(id){
@@ -199,4 +220,57 @@ export class SellitemPage implements OnInit {
     this.sellItems=[];
     this.customerLoaded=false;
   }
+
+  calculateTotal(){
+    let tot=0;
+    this.sellItems.forEach(sellItem => {
+      tot+=sellItem.qty*sellItem.rate;
+    });
+    this.total=tot;
+  }
+
+  initAddCustomer(){
+    this.addingCustomer=true;
+  }
+
+  saveCustomer(){
+    if(this.addLock){
+      return;
+    }
+
+    if(this.addName.length<5){
+      alert('Please enter customer name');
+      return;
+    }
+
+    if(this.addPhone.toString().length!=10){
+      alert('Please enter phone number');
+      return;
+    }
+
+    const index=this.customers.findIndex(o=>o.phone==this.addPhone);
+
+    if(index>-1){
+      const customer=this.customers[index];
+      alert(`Customer already added for phone no ${customer.phone} with name ${customer.name}`);
+      return;
+    }
+    this.addLock=true;
+
+    const newCustomer=new Customer({
+      phone:this.addPhone,
+      name:this.addName,
+    });
+    newCustomer.save()
+    .then((c: Customer)=>{
+      this.customers.push(newCustomer);
+      this.phone=parseInt(this.addPhone,10);
+      this.addLock=false;
+      this.addingCustomer=false;
+      this.loadCustomerData();
+    });
+
+  }
+
+
 }
