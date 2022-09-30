@@ -29,7 +29,7 @@ export class SellitemPage implements OnInit {
   payments: ChalanPayment[] = [];
   loading = false;
   item_id: number;
-  phone: number;
+  phone: string;
   selling = false;
   customerLoaded = false;
   total=0;
@@ -53,6 +53,13 @@ export class SellitemPage implements OnInit {
   addPhone= '';
   addLock=false;
 
+  //search customer
+  searchingCustomer= false;
+  searchKeyword='';
+  searchList: Customer[]=[];
+  currentCustomer: Customer;
+
+
   constructor(private db: SqlliteService, private api: ApiService, public auth: AuthService) { }
   async ngOnInit() {
     this.hasPermission=this.auth.hasPermission(['15.06','15.07']);
@@ -62,6 +69,7 @@ export class SellitemPage implements OnInit {
       const d4 = new NepaliDate(localDate);
       this.date = d4.format('YYYY-MM-DD');
       this.curDate = Helper.dateINT(this.date);
+      this.searchCustomer();
     }
 
   }
@@ -114,6 +122,7 @@ export class SellitemPage implements OnInit {
 
   async loadCustomerData() {
     this.customerLoaded = false;
+    this.currentCustomer=this.customers.find(o=>o.phone==this.phone);
     this.sellItems = await this.db.select(ChalanSellItem, 'select * from chalansellitems where phone=? and date=? and user_id=?', [this.phone, this.curDate, this.auth.user.id]);
     this.payments = await this.db.select(ChalanPayment, 'select * from chalanpayments where phone=? and date=? and user_id=?', [this.phone, this.curDate, this.auth.user.id]);
     this.customerLoaded = true;
@@ -199,15 +208,17 @@ export class SellitemPage implements OnInit {
     });
   }
   delPayment(id){
-    const index=this.payments.findIndex(o=>o.id===id);
-    if(index>-1){
-      const payment=this.payments[index];
-      payment.del()
-      .then((res)=>{
-        this.payments.splice(index,1);
+    if(confirm('Do you want to delete payment')){
+      const index=this.payments.findIndex(o=>o.id===id);
+      if(index>-1){
+        const payment=this.payments[index];
+        payment.del()
+        .then((res)=>{
+          this.payments.splice(index,1);
 
-      });
+        });
 
+      }
     }
   }
 
@@ -264,12 +275,21 @@ export class SellitemPage implements OnInit {
     newCustomer.save()
     .then((c: Customer)=>{
       this.customers.push(newCustomer);
-      this.phone=parseInt(this.addPhone,10);
+      this.phone=this.addPhone;
       this.addLock=false;
       this.addingCustomer=false;
       this.loadCustomerData();
     });
 
+  }
+
+  searchCustomer(){
+    this.searchList=this.customers.filter(o=>o.name.toLowerCase().startsWith(this.searchKeyword.toLowerCase())|| o.phone.startsWith(this.searchKeyword));
+  }
+  selectCustomer(p){
+    this.phone=p;
+    this.loadCustomerData();
+    this.searchingCustomer=false;
   }
 
 
