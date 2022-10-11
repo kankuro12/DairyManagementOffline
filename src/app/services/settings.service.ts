@@ -11,9 +11,8 @@ export class SettingsService {
     {
       title:'Centers',
       path: '/pages/centers',
-      active: true,
+      active: false,
       needlogin: false,
-
     },
     {
       title:'Customers',
@@ -59,6 +58,13 @@ export class SettingsService {
       title:'SellItem',
       tab:'sellitem',
       icon:'cash',
+      open: false,
+
+    },
+    {
+      title:'Sell Item',
+      tab:'calculator',
+      icon:'cash',
       open: true,
 
     },
@@ -66,13 +72,13 @@ export class SettingsService {
       title:'Milk',
       tab:'tab2',
       icon:'beaker',
-      open: true,
+      open: false,
 
     }, {
       title:'Fat SNF',
       tab:'snffat',
       icon:'calculator',
-      open: true,
+      open: false,
 
     },
     {
@@ -101,7 +107,7 @@ export class SettingsService {
       title:'Farmers',
       tab:'farmers',
       icon:'people',
-      open: true,
+      open: false,
 
     },
   ];
@@ -109,19 +115,19 @@ export class SettingsService {
   sync={
     center:{
       f:true,
-      b:false
+      b:true
     },
     milk:{
-      f:false,
+      f:true,
       b:true
     },
     snffat:{
-      f:false,
+      f:true,
       b:true
     },
     farmer:{
       f:true,
-      b:false
+      b:true
     }
   };
 

@@ -58,4 +58,17 @@ export class Helper {
   }
 
 
-};
+  static isNumber(num) {
+    return num !== undefined && num !== null && !isNaN(num);
+  }
+
+  static sum(array,obj) {
+    return (array.length === 0) ? 0 : array[0][obj] + Helper.sum(array.slice(1),obj);
+  }
+
+  static toPromise(call){
+    return new Promise((resolve,reject)=>{
+      call.subscribe(val=>resolve(val),(err)=>reject(err));
+    });
+  }
+}

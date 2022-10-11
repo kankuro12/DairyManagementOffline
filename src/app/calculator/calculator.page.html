@@ -1,0 +1,180 @@
+<ion-content>
+
+  <div class="p-3">
+    <div class="d-flex justify-content-between">
+      <strong>{{date}}</strong>
+      <span>
+        <strong (click)="searchingCustomer=true;">
+          {{customerLoaded?currentCustomer.name:'------------------'}}
+        </strong>
+        <button  class="btn btn-primary" (click)="initAddCustomer()">
+          <ion-icon name="add-circle"></ion-icon>
+        </button>
+      </span>
+    </div>
+  </div>
+  <div class="sticky-top">
+    <div class="row m-0 ">
+      <div class="col-12 p-0">
+        <!-- <label class="small-label">
+          Particular
+        </label> -->
+        <input type="text" class="form-control no-border-radius no-outline" placeholder="Particular" [(ngModel)]="name">
+      </div>
+      <div class="col-4 p-0">
+        <!-- <label class="small-label">
+          Rate
+        </label> -->
+        <input type="number" #rateInput class="form-control no-border-radius no-outline" placeholder="Rate" [(ngModel)]="rate">
+      </div>
+      <div class="col-4 p-0">
+        <!-- <label class="small-label">
+          Qty
+        </label> -->
+        <input type="number"  #qtyInput class="form-control no-border-radius no-outline" placeholder="Qty" [(ngModel)]="qty" (keydown)="qtyKeyDown($event)">
+      </div>
+      <div class="col-4 p-0">
+        <button class="btn btn-primary no-border-radius no-outline w-100 h-100" (click)="addToBill()">
+          Add
+        </button>
+      </div>
+    </div>
+  </div>
+  <table class="table">
+    <tr>
+      <th class="th">Particular</th>
+      <th class="th">Rate</th>
+      <th class="th">Qty</th>
+      <th class="th">Total</th>
+    </tr>
+    <tr *ngFor="let item of items" >
+      <td>
+          {{item.name}}
+      </td>
+      <td>
+        {{item.rate}}
+      </td>
+      <td>
+        {{item.qty}}
+      </td>
+      <td>
+        {{item.total}}
+      </td>
+    </tr>
+  </table>
+
+  <div class="sticky-bottom bg-white" style="position: fixed;">
+
+    <div class="row m-0 with-small-label">
+      <div class="col-4  p-0">
+        <label class="small-label">
+          Net Total
+        </label>
+        <div class="form-control no-border-radius no-outline" >
+            {{total}}
+        </div>
+      </div>
+      <div class="col-4  p-0">
+        <label class="small-label">
+          Discount
+        </label>
+        <input tabindex="-1"  type="number" class="form-control no-border-radius no-outline" placeholder="discount" [(ngModel)]="discount" (input)="calculate()"  (blur)="discount= discount===null?0:discount" (focus)="discount= discount===0?null:discount">
+      </div>
+      <div class="col-4 p-0">
+        <label class="small-label">
+          Paid
+        </label>
+        <input tabindex="-1"  #paidInput type="number" class="form-control no-border-radius no-outline" placeholder="paid" [(ngModel)]="paid" (input)="calculate()" (blur)="paid= paid===null?0:paid" (focus)="paid= paid===0?null:paid">
+      </div>
+      <div class="col-4 p-0">
+        <label class="small-label">
+          Due
+        </label>
+        <div class="form-control no-border-radius no-outline" >
+          {{due}}
+        </div>
+      </div>
+      <div class="col-4 p-0">
+        <label class="small-label" [ngClass]="{'no': noReturn}" (click)="noReturn=!noReturn;calculate();">
+          Return
+        </label>
+        <div class="form-control no-border-radius no-outline" (click)="noReturn=!noReturn;calculate();" >
+          {{returnAmt}}
+        </div>
+      </div>
+      <div class="col-4 p-0">
+        <button class="btn btn-secondary no-border-radius no-outline w-100 h-100" (click)="saveData()">
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <ion-modal [isOpen]="addingCustomer" (didDismiss)="addingCustomer=false">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Add Customer</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="addingCustomer=false">Close</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <div class="row">
+          <div class="col-12">
+            <label >Name</label>
+            <input type="text" class="form-control" [(ngModel)]="addName" placeholder="Customer Name">
+          </div>
+          <div class="col-6">
+            <label >Phone No</label>
+            <input type="number" class="form-control" [(ngModel)]="addPhone" placeholder="Customer Phone">
+          </div>
+          <div class="col-6 d-flex align-items-end ">
+            <button class="btn btn-primary w-100" (click)="saveCustomer()" *ngIf="!addLock">
+              Save
+            </button>
+            <div class="text-center">
+              <ion-spinner name="dots" *ngIf="addLock"></ion-spinner>
+            </div>
+          </div>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <ion-modal [isOpen]="searchingCustomer" (didDismiss)="searchingCustomer=false">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Search Customer</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="searchingCustomer=false">Close</ion-button>
+            <ion-button (click)="addingCustomer=true">Add</ion-button>
+
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <div class="sticky-top">
+          <input type="search"  class="form-control" [(ngModel)]="searchKeyword" (input)="searchCustomer()" placeholder="Search Customer">
+        </div>
+
+        <table class="table">
+          <tr *ngFor="let cus of searchList"  (click)="selectCustomer(cus.phone)">
+            <td class="py-2" [ngClass]="{'selected':phone===cus.phone }">
+              {{cus.phone}}
+            </td>
+            <td class="py-2" [ngClass]="{'selected':phone===cus.phone }">
+              {{cus.name}}
+            </td>
+          </tr>
+        </table>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+
+
+
+</ion-content>

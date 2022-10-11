@@ -1,0 +1,37 @@
+.th {
+  background: white;
+  position: sticky;
+  top: 200;
+}
+
+
+
+
+.small-label{
+  position: absolute;
+  top:0px;background:#007ACC;
+  color:white;
+  font-size:0.6rem;
+  padding:2px 5px;
+  &.no{
+    background:#B43B2D;
+    text-decoration: line-through;
+  }
+}
+
+
+.with-small-label{
+  & .form-control{
+    padding-top: 12px;
+  }
+
+  &>div{
+    position: relative;
+  }
+}
+
+
+td.selected{
+  background-color: blue;
+  color: white;
+}

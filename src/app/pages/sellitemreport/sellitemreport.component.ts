@@ -30,11 +30,7 @@ export class SellitemreportComponent implements OnInit {
 
   constructor(private db: SqlliteService, private auth: AuthService,private api: ApiService,private loadingController: LoadingController) { }
 
-  toPromise(call){
-    return new Promise((resolve,reject)=>{
-      call.subscribe(val=>resolve(val),(err)=>reject(err));
-    });
-  }
+
   async ngOnInit() {
     // this.hasPermission=this.auth.user
 
@@ -73,7 +69,7 @@ export class SellitemreportComponent implements OnInit {
       try {
         const pushSellItem: any=sellItem;
         pushSellItem.name=this.getName(pushSellItem.phone);
-        const data: any=await this.toPromise(this.api.post('upload-chalansales',pushSellItem));
+        const data: any=await Helper.toPromise(this.api.post('upload-chalansales',pushSellItem));
         if(data.status){
           sellItem.sync=1;
           await sellItem.save();
@@ -93,7 +89,7 @@ export class SellitemreportComponent implements OnInit {
       try {
         const pushPayment: any=payment;
         pushPayment.name=this.getName(pushPayment.phone);
-        const data: any=await this.toPromise(this.api.post('upload-chalanpayment',pushPayment));
+        const data: any=await Helper.toPromise(this.api.post('upload-chalanpayment',pushPayment));
         if(data.status){
           payment.sync=1;
           await payment.save();

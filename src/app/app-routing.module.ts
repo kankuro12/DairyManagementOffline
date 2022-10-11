@@ -42,6 +42,10 @@ const routes: Routes = [
   {
     path: 'sellitem',
     loadChildren: () => import('./sellitem/sellitem.module').then( m => m.SellitemPageModule)
+  },
+  {
+    path: 'calculator',
+    loadChildren: () => import('./calculator/calculator.module').then( m => m.CalculatorPageModule)
   }
 ];
 @NgModule({

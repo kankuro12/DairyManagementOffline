@@ -134,4 +134,18 @@ export default [
   ,
   `ALTER TABLE chalanpayments
   ADD sync integer default 0;`
+  ,
+  `
+  create table IF NOT EXISTS bills(
+    id INTEGER PRIMARY KEY,
+    total decimal(10,2),
+    discount decimal(10,2),
+    paid decimal(10,2),
+    date INTEGER,
+    particular text,
+    phone text,
+    name text
+  );`,
+  `ALTER TABLE bills
+  ADD sync integer default 0;`
 ];
