@@ -148,4 +148,16 @@ export default [
   );`,
   `ALTER TABLE bills
   ADD sync integer default 0;`
+  ,
+  `
+  create table IF NOT EXISTS customerpayments(
+    id INTEGER PRIMARY KEY,
+    amount decimal(10,2),
+    date INTEGER,
+    phone text,
+    name text,
+    sync INTEGER default 0
+  );`,
+  `ALTER TABLE customers
+  ADD area_id integer default 0;`
 ];

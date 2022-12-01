@@ -46,6 +46,18 @@ const routes: Routes = [
   {
     path: 'calculator',
     loadChildren: () => import('./calculator/calculator.module').then( m => m.CalculatorPageModule)
+  },
+  {
+    path: 'customerpayment',
+    loadChildren: () => import('./customerpayment/customerpayment.module').then( m => m.CustomerpaymentPageModule)
+  },
+  {
+    path: 'adddue',
+    loadChildren: () => import('./pages/adddue/adddue.module').then( m => m.AddduePageModule)
+  },
+  {
+    path: 'customer-collection',
+    loadChildren: () => import('./customer-collection/customer-collection.module').then( m => m.CustomerCollectionPageModule)
   }
 ];
 @NgModule({

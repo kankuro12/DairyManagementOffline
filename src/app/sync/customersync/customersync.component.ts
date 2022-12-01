@@ -1,3 +1,4 @@
+import { SqlliteService } from 'src/app/services/sqllite.service';
 import { AuthService } from './../../services/auth.service';
 import { Customer } from './../../database/models/customer.modal';
 import { ApiService } from './../../services/api.service';
@@ -18,7 +19,7 @@ export class CustomersyncComponent implements OnInit {
   ngOnInit() {}
   async importData() {
     this.pulling = 2;
-    if (confirm('Do you want to fetch farmer data from server?')) {
+    if (confirm('Do you want to fetch customer data from server?')) {
       this.api.get('customer-list')
         .subscribe(async (customers: any[]) => {
           this.pulling = 3;
@@ -35,10 +36,13 @@ export class CustomersyncComponent implements OnInit {
                 alert('Data fetched sucessfully');
               }
             }
+
           } else {
             this.pulling = 1;
           }
         }, (err) => { this.pulling = 1; alert("Some Error Occured Please Try Again."); });
+    }else{
+      this.pulling = 1;
     }
   }
 

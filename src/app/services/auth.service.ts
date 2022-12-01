@@ -1,3 +1,4 @@
+import { AreaDataService } from './area.data.services';
 /* eslint-disable @typescript-eslint/prefer-for-of */
 /* eslint-disable eqeqeq */
 import { ApiService } from './api.service';
@@ -15,13 +16,13 @@ export class AuthService {
   userLoading = true;
   token = '';
   redirect = 'profile';
-  loginMode = 1;
+  loginMode = 2;
 
   authstart: EventEmitter<any> = new EventEmitter<any>();
   authprogress: EventEmitter<any> = new EventEmitter<any>();
   authend: EventEmitter<any> = new EventEmitter<any>();
   private logged = false;
-  constructor(private api: ApiService, private router: Router) {
+  constructor(private api: ApiService, private router: Router,private areaData: AreaDataService) {
   }
 
   login(phone, password) {
@@ -31,7 +32,9 @@ export class AuthService {
       console.log({ phone, password });
       this.api.post('login-remote', { phone, password })
         .subscribe((res: any) => {
+
           console.log(res);
+          this.loginMode=1;
           this.user = res;
           this.user.times = this.user.time.map(o => parseInt(o.replace(':', ''), 10));
           const userData = {
@@ -49,7 +52,8 @@ export class AuthService {
           console.log(res.token);
           this.api.setHeader(res.token);
           this.authend.emit(true);
-
+          localStorage.setItem('_xcbphone',phone);
+          this.areaData.pull();
         }, (err) => {
           if (err.status == 0) {
             this.offlineLogin(phone, password);
@@ -62,6 +66,8 @@ export class AuthService {
       this.offlineLogin(phone, password);
     }
   }
+
+
 
 
   offlineLogin(phone, password) {

@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/prefer-for-of */
+import { SettingsService } from 'src/app/services/settings.service';
+import { ItemlistService } from './../services/itemlist.service';
+import { AuthService } from './../services/auth.service';
 import { SellItemSync } from './../services/sellItemSync.services';
 import { Bill } from './../database/models/bill.modal';
 import { ElementRef } from '@angular/core';
@@ -9,6 +13,7 @@ import { Helper } from './../utli/helper';
 import { Customer } from './../database/models/customer.modal';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import NepaliDate from "nepali-date";
+import { ApiService } from '../services/api.service';
 
 @Component({
   selector: 'app-calculator',
@@ -16,6 +21,7 @@ import NepaliDate from "nepali-date";
   styleUrls: ['./calculator.page.scss'],
 })
 export class CalculatorPage implements OnInit {
+  @ViewChild('particularInput') particularInput: ElementRef;
   @ViewChild('rateInput') rateInput: ElementRef;
   @ViewChild('qtyInput') qtyInput: ElementRef;
   @ViewChild('paidInput') paidInput: ElementRef;
@@ -48,24 +54,35 @@ export class CalculatorPage implements OnInit {
   searchList: Customer[] = [];
   currentCustomer: Customer;
   customerLoaded = false;
+  t:  ReturnType<typeof setTimeout>;
 
   //saveMode
   saveMode = 1;
   noReturn = false;
 
-  constructor(private db: SqlliteService,private sync: SellItemSync) { }
+  //indexing
+  curIndex = 0;
+  //particular management
+  showSearch = false;
+  selectParticular = false;
+
+  //edit
+  editingItem: SimpleItem= null;
+
+  constructor(private db: SqlliteService,
+    private sync: SellItemSync,
+    private auth: AuthService,
+    private api: ApiService,
+    public itemList: ItemlistService,
+    private setting: SettingsService) { }
   async ngOnInit() {
-
     this.customers = await this.db.select(Customer, "select * from customers");
-    console.log(await this.db.select(Bill,'select * from bills'));
-
     const localDate = new Date();
     const d4 = new NepaliDate(localDate);
     this.date = d4.format('YYYY-MM-DD');
     this.curDate = Helper.dateINT(this.date);
     console.log(this.curDate);
     this.searchCustomer();
-
   }
 
   calculate() {
@@ -75,7 +92,7 @@ export class CalculatorPage implements OnInit {
       this.due = remain;
       this.returnAmt = 0;
     } else {
-      this.returnAmt =this.noReturn?0: (-1 * remain);
+      this.returnAmt = this.noReturn ? 0 : (-1 * remain);
       this.due = 0;
     }
     console.log(this.total);
@@ -100,14 +117,27 @@ export class CalculatorPage implements OnInit {
 
     }
     this.items.push({
+      index: this.curIndex++,
       name: this.name,
       qty: this.qty,
       rate: this.rate,
       total: this.qty * this.rate
     });
+
+    if (this.name.length > 0) {
+      this.itemList.add(this.name);
+    }
     this.rate = null; this.qty = null; this.name = '';
-    this.rateInput.nativeElement.focus();
+    if (this.setting.selectParticular) {
+      this.particularInput.nativeElement.focus();
+
+    } else {
+
+      this.rateInput.nativeElement.focus();
+    }
     this.calculate();
+    this.itemList.clearSearch();
+
   }
 
 
@@ -141,16 +171,19 @@ export class CalculatorPage implements OnInit {
       name: this.currentCustomer != null ? this.currentCustomer.name : null,
       phone: this.currentCustomer != null ? this.currentCustomer.phone : null,
       particular: this.items.map(o => `${o.name} (${o.rate} X ${o.qty})`).join(','),
-      total:this.total,
-      paid:  this.noReturn?this.paid:(this.paid-this.returnAmt),
+      total: this.total,
+      paid: this.noReturn ? this.paid : (this.paid - this.returnAmt),
       discount: this.discount,
-      date:this.curDate
+      date: this.curDate
     });
     bill.save()
-    .then((newBill: Bill) => {
-      console.log(newBill,'new bill');
-      this.reset();
-        this.sync.sync();
+      .then((newBill: Bill) => {
+        console.log(newBill, 'new bill');
+        this.reset();
+        this.noReturn=false;
+        if (this.auth.loginMode == 1) {
+          this.sync.sync();
+        }
       });
   }
 
@@ -163,14 +196,38 @@ export class CalculatorPage implements OnInit {
     this.paid = 0;
     this.due = 0;
     this.returnAmt = 0;
-    this.searchKeyword='';
-    this.customerLoaded=false;
-    this.currentCustomer=null;
-    this.phone='';
-    this.items=[];
+    this.searchKeyword = '';
+    this.customerLoaded = false;
+    this.currentCustomer = null;
+    this.phone = '';
+    this.items = [];
     this.searchCustomer();
   }
 
+  delItem(id){
+    const index=this.items.findIndex(o=>o.index==id);
+    if (index>-1) {
+      if(confirm('Delete Item from list')){
+        this.items.splice(index,1);
+      }
+    }
+  }
+
+
+  initEdit(_item){
+    this.editingItem={..._item};
+
+  }
+
+  updateItem(){
+    const index=this.items.findIndex(o=>o.index==this.editingItem.index);
+    if (index>-1) {
+      this.editingItem.total=this.editingItem.qty*this.editingItem.rate;
+      this.items[index]=this.editingItem;
+      this.calculate();
+      this.editingItem=null;
+    }
+  }
 
   //customer functions
   initAddCustomer() {
@@ -220,8 +277,40 @@ export class CalculatorPage implements OnInit {
 
   }
 
+  //search customer
   async searchCustomer() {
     this.searchList = this.customers.filter(o => o.name.toLowerCase().startsWith(this.searchKeyword.toLowerCase()) || o.phone.startsWith(this.searchKeyword)).slice(0, 20);
+    if(this.t!=null){
+      clearTimeout(this.t);
+      this.t=null;
+    }
+    this.t=setTimeout(()=>{
+      if(this.searchList.length<20){
+        this.apiSearch();
+      }
+    },1000);
+  }
+
+  apiSearch(){
+    if(this.searchKeyword.length>1){
+
+      this.api.post('app/customer-search',{
+        keyword:this.searchKeyword,
+        limit: 20-this.searchList.length,
+        phones: this.searchList.map(o=>o.phone)
+      })
+      .subscribe(async (customerList: any[])=>{
+
+        this.searchList=this.searchList.concat(customerList);
+        for (let index = 0; index < customerList.length; index++) {
+          const customer = customerList[index];
+          const f = new Customer(customer);
+          await f.save();
+          this.customers.push(f);
+        }
+
+      });
+    }
   }
   selectCustomer(p) {
     this.phone = p;
@@ -236,5 +325,13 @@ export class CalculatorPage implements OnInit {
     if (this.saveMode == 2) {
       this.saveData();
     }
+  }
+
+  nameSeleted(_name) {
+    this.name = _name;
+    this.showSearch = false;
+    this.rateInput.nativeElement.focus();
+    this.itemList.clearSearch();
+
   }
 }

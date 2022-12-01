@@ -7,19 +7,24 @@
 <ion-content>
   <div class="p-3">
     <div class="row">
-      <div class="col-6" [routerLink]="['/sync/center']" routerLinkActive="router-link-active">
+      <div class="col-6 mb-2" [routerLink]="['/sync/center']" routerLinkActive="router-link-active" *ngIf="setting.sync.center.f">
         <div class="px-2 py-4 text-center shadow">
-          Center Data
+          Center Data <ion-icon name="cloud-download-outline"></ion-icon>
         </div>
       </div>
-      <div class="col-6" [routerLink]="['/sync/farmer']" routerLinkActive="router-link-active">
+      <div class="col-6 mb-2" [routerLink]="['/sync/farmer']" routerLinkActive="router-link-active"  *ngIf="setting.sync.farmer.f">
         <div class="px-2 text-center py-4 shadow">
-          Farmer Data
+          Farmer Data <ion-icon name="cloud-download-outline"></ion-icon>
         </div>
       </div>
-      <div class="col-6" [routerLink]="['/sync/customer']" routerLinkActive="router-link-active">
+      <div class="col-6 mb-2" [routerLink]="['/sync/customer']" routerLinkActive="router-link-active"  *ngIf="setting.sync.customer.f">
         <div class="px-2 text-center py-4 shadow">
-          Customer Data
+          Customer Data <ion-icon name="cloud-download-outline"></ion-icon>
+        </div>
+      </div>
+      <div class="col-6 mb-2" [routerLink]="['/sync/customer']" routerLinkActive="router-link-active"  *ngIf="setting.sync.bills.b">
+        <div class="px-2 text-center py-4 shadow">
+          Bills <ion-icon name="cloud-upload-outline"></ion-icon>
         </div>
       </div>
     </div>

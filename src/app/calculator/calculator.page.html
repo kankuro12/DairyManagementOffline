@@ -14,12 +14,19 @@
     </div>
   </div>
   <div class="sticky-top">
+
     <div class="row m-0 ">
-      <div class="col-12 p-0">
-        <!-- <label class="small-label">
+      <div class="col-12 p-0" style="position: relative;" tabindex="1" (focus)="showSearch=true;">
+        <!-- <label class="small-label" [ngClass]="{'no': !selectParticular}"  (dblclick)="selectParticular=!selectParticular">
           Particular
         </label> -->
-        <input type="text" class="form-control no-border-radius no-outline" placeholder="Particular" [(ngModel)]="name">
+        <input type="text" (focus)="showSearch=true;" #particularInput  (blur)="showSearch=false;"  id="itemlistview" list="itemsList" class="form-control no-border-radius no-outline" placeholder="Particular" [(ngModel)]="name" (input)="itemList.search(name)">
+        <div  class="item-list shadow" [ngClass]="{'d-none': !showSearch}">
+          <div *ngFor="let item of itemList.searchItems" (click)="nameSeleted(item)">
+            {{item}}
+          </div>
+
+        </div>
       </div>
       <div class="col-4 p-0">
         <!-- <label class="small-label">
@@ -46,9 +53,10 @@
       <th class="th">Rate</th>
       <th class="th">Qty</th>
       <th class="th">Total</th>
+      <th></th>
     </tr>
-    <tr *ngFor="let item of items" >
-      <td>
+    <tr *ngFor="let item of items"  >
+      <td (dblclick)="initEdit(item)" >
           {{item.name}}
       </td>
       <td>
@@ -60,6 +68,9 @@
       <td>
         {{item.total}}
       </td>
+      <th>
+        <strong class="text-danger" (click)="delItem(item.index)">Del</strong>
+      </th>
     </tr>
   </table>
 
@@ -170,6 +181,43 @@
             </td>
           </tr>
         </table>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <ion-modal [isOpen]="editingItem!==null" (didDismiss)="editingItem=null">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Edit Item</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="editingItem=null">Close</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <div class="row m-0 ">
+          <div class="col-12 p-0" style="position: relative;">
+            <input type="text"id="itemlistview" list="itemsList" class="form-control no-border-radius no-outline" placeholder="Particular" [(ngModel)]="editingItem.name" >
+          </div>
+          <div class="col-4 p-0">
+            <!-- <label class="small-label">
+              Rate
+            </label> -->
+            <input type="number" #rateInput class="form-control no-border-radius no-outline" placeholder="Rate" [(ngModel)]="rate"  [(ngModel)]="editingItem.rate" >
+          </div>
+          <div class="col-4 p-0">
+            <!-- <label class="small-label">
+              Qty
+            </label> -->
+            <input type="number"  #qtyInput class="form-control no-border-radius no-outline" placeholder="Qty" [(ngModel)]="qty"  [(ngModel)]="editingItem.qty" >
+          </div>
+          <div class="col-4 p-0">
+            <button class="btn btn-primary no-border-radius no-outline w-100 h-100" (click)="updateItem()">
+              Update
+            </button>
+          </div>
+        </div>
       </ion-content>
     </ng-template>
   </ion-modal>

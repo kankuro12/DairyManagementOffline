@@ -40,6 +40,14 @@ const routes: Routes = [
         loadChildren: () => import('../calculator/calculator.module').then(m => m.CalculatorPageModule)
       },
       {
+        path: 'customerpayment',
+        loadChildren: () => import('../customerpayment/customerpayment.module').then(m => m.CustomerpaymentPageModule)
+      },
+      {
+        path: 'customer-collection',
+        loadChildren:()=> import('../customer-collection/customer-collection.module').then(m=>m.CustomerCollectionPageModule)
+      },
+      {
         path: 'report',
         component: FarmerReportComponent
       },

@@ -1,0 +1,68 @@
+<ion-content>
+  <div class="p-3" style="position: relative;" tabindex="1" (focus)="showSearch=true;"  (blur)="showSearch=false;" *ngIf="!customerLoaded">
+    <input type="text" (input)="search.search($event)"  placeholder="Search Customer" class="form-control" (focus)="showSearch=true;" #particularInput  (blur)="showSearch=false;">
+    <div  class="item-list shadow" [ngClass]="{'d-none': !showSearch}">
+      <div *ngFor="let customer of search.searchCustomers" (click)="selected(customer)" class="py-1">
+        {{customer.name}} - {{customer.phone}}
+      </div>
+    </div>
+  </div>
+  <div class="p-2" *ngIf="customerLoaded">
+    <div class="shadow p-2 mb-2">
+      <div class="d-flex justify-content-between">
+        <strong>
+          {{customer.name}} <br> {{customer.phone}}
+        </strong>
+        <strong class="text-danger" (click)="customerLoaded=!customerLoaded;customer=null;cr=null;dr=null;">
+          <ion-button>
+            <ion-icon name="close-circle-outline"></ion-icon>
+          </ion-button>
+        </strong>
+      </div>
+      <div  *ngIf="cr!==dr">
+        <hr>
+        <div class="d-flex justify-content-between">
+          <strong>
+           Current Balance
+          </strong>
+          <strong class="text-" >
+            Rs. {{cr>dr?(cr-dr):(dr-cr)}}, {{cr>dr?('Advance'):('Due')}}
+          </strong>
+        </div>
+      </div>
+
+    </div>
+    <div *ngIf="loading" class="text-center">
+      <ion-spinner></ion-spinner>
+    </div>
+    <div *ngIf="!loading">
+      <div class="shadow p-2 mb-2">
+        <div class="row">
+          <div class="col-6">
+            <div class="form-group">
+              <strong >Date</strong>
+              <input type="text" [(ngModel)]="date" class="form-control no-border-radius no-outline">
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="form-group">
+              <strong >Amount</strong>
+              <input type="number" [(ngModel)]="amount"  class="form-control no-border-radius no-outline">
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="form-group">
+
+              <button class="btn btn-primary w-100 no-border-radius no-outline" (click)="save()" *ngIf="!saving">
+                Save
+              </button>
+              <div class="text-center" *ngIf="saving">
+                <ion-spinner></ion-spinner>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

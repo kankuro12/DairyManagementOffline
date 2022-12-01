@@ -1,3 +1,4 @@
+import { SettingsService } from 'src/app/services/settings.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -7,7 +8,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SyncPage implements OnInit {
 
-  constructor() { }
+  constructor(public setting: SettingsService) { }
 
   ngOnInit() {
   }

@@ -1,3 +1,8 @@
+import { CustomerBalance } from './../database/structure/customer.balance.data';
+import { CustomerService } from './../services/customer.service';
+import { parse } from 'querystring';
+import { Area, AreaRate } from './../database/structure/area.data';
+import { AreaDataService } from './../services/area.data.services';
 /* eslint-disable max-len */
 import { AuthService } from './../services/auth.service';
 /* eslint-disable eqeqeq */
@@ -51,6 +56,9 @@ export class SellitemPage implements OnInit {
   addingCustomer=false;
   addName= '';
   addPhone= '';
+  addAreaID= null;
+  balance = 0;
+
   addLock=false;
 
   //search customer
@@ -59,8 +67,11 @@ export class SellitemPage implements OnInit {
   searchList: Customer[]=[];
   currentCustomer: Customer;
 
+  //areaInfo
+  areaRates: AreaRate[]=[];
+  area: Area;
 
-  constructor(private db: SqlliteService, private api: ApiService, public auth: AuthService) { }
+  constructor(private db: SqlliteService, private api: ApiService, public auth: AuthService,public areaData: AreaDataService,private CustomerManager: CustomerService) { }
   async ngOnInit() {
     this.hasPermission=this.auth.hasPermission(['15.06','15.07']);
     if(this.hasPermission){
@@ -70,6 +81,7 @@ export class SellitemPage implements OnInit {
       this.date = d4.format('YYYY-MM-DD');
       this.curDate = Helper.dateINT(this.date);
       this.searchCustomer();
+      this.CustomerManager.pull();
     }
 
   }
@@ -127,13 +139,29 @@ export class SellitemPage implements OnInit {
     this.payments = await this.db.select(ChalanPayment, 'select * from chalanpayments where phone=? and date=? and user_id=?', [this.phone, this.curDate, this.auth.user.id]);
     this.customerLoaded = true;
     this.resetItem();
+    this.area=this.areaData.data.areas.find(o=>o.id==this.currentCustomer.area_id);
+    this.areaRates=this.areaData.data.rates.filter(o=>o.area_id==this.currentCustomer.area_id);
+    const customerBalance=this.CustomerManager.data.find(o=>o.phone==this.currentCustomer.phone);
+    if(customerBalance!=undefined){
+      this.balance=customerBalance.dr-customerBalance.cr;
+    }else{
+      this.balance=0;
+    }
+    console.log(this.balance);
     this.calculateTotal();
 
   }
   loadItemData() {
     console.log(this.items, this.item_id);
     const item = this.items.find(o => o.item_id == this.item_id);
-    this.rate = item.rate;
+    const areaRate=this.areaRates.find(o=>o.item_id==this.item_id);
+    if(areaRate!=undefined && areaRate!=null){
+      this.rate =parseFloat( areaRate.sell_price);
+
+    }else{
+
+      this.rate = item.rate;
+    }
     this.qty = 1;
     this.calculate();
   }
@@ -249,12 +277,12 @@ export class SellitemPage implements OnInit {
       return;
     }
 
-    if(this.addName.length<5){
+    if(this.addName.length<3){
       alert('Please enter customer name');
       return;
     }
 
-    if(this.addPhone.toString().length!=10){
+    if(this.addPhone.toString().length<8){
       alert('Please enter phone number');
       return;
     }
@@ -271,6 +299,7 @@ export class SellitemPage implements OnInit {
     const newCustomer=new Customer({
       phone:this.addPhone,
       name:this.addName,
+      area_id:this.addAreaID,
     });
     newCustomer.save()
     .then((c: Customer)=>{
@@ -292,5 +321,14 @@ export class SellitemPage implements OnInit {
     this.searchingCustomer=false;
   }
 
+  renderArea(c: Customer){
+    const cusArea=this.areaData.data.areas.find(o=>o.id==c.area_id);
+    if(cusArea!=undefined && cusArea!=null){
+
+      return cusArea.name;
+    }else{
+      return '';
+    }
+  }
 
 }

@@ -9,6 +9,9 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
+  <div class="sticky-top bg-white">
+    <input type="text" (input)="search.search($event)" class="form-control" placeholder="searchCustomer">
+  </div>
   <table class="table table-bordered">
     <tr>
       <th>
@@ -18,7 +21,7 @@
         Name
       </th>
     </tr>
-    <tr *ngFor="let customer of customers">
+    <tr *ngFor="let customer of search.searchCustomers">
       <td>
         {{customer.phone}}
       </td>

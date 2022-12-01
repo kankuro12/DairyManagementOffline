@@ -37,8 +37,13 @@
         Customer
       </label>
       <div class="form-control" (click)="searchingCustomer=true">
-        {{customerLoaded? currentCustomer.name+" - "+currentCustomer.phone :'Please select customer'}}
+        <span>
+          {{customerLoaded? currentCustomer.name+" - "+currentCustomer.phone :'Please select customer'}}
 
+        </span>
+        <span *ngIf="balance!==0">
+          ({{balance<0?'Cr.':'Dr.'}} {{balance<0?(-1*balance):balance}})
+        </span>
       </div>
       <!-- <select class="form-control" [(ngModel)]="phone" (change)="loadCustomerData()">
         <option *ngFor="let customer of customers" value="{{customer.phone}}">{{customer.name}} - {{customer.phone}}</option>
@@ -188,6 +193,14 @@
             <label >Phone No</label>
             <input type="number" class="form-control" [(ngModel)]="addPhone" placeholder="Customer Phone">
           </div>
+          <div class="col-6">
+            <label >Area</label>
+            <select  class="form-control" [(ngModel)]="addAreaID" >
+              <option *ngFor="let area of areaData.data.areas" value="{{area.id}}">
+                {{area.name}}
+              </option>
+            </select>
+          </div>
           <div class="col-6 d-flex align-items-end ">
             <button class="btn btn-primary w-100" (click)="saveCustomer()" *ngIf="!addLock">
               Save
@@ -223,6 +236,9 @@
             </td>
             <td class="py-2" [ngClass]="{'selected':phone===cus.phone }">
               {{cus.name}}
+            </td>
+            <td>
+              {{renderArea(cus)}}
             </td>
           </tr>
         </table>

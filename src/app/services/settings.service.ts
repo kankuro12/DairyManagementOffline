@@ -6,7 +6,7 @@ import { Injectable, Type } from '@angular/core';
 export class SettingsService {
   //1=fixed [eg gai,vaishi] 2=calculate from snf fat
   rateType=2;
-
+  selectParticular=false;
   home=[
     {
       title:'Centers',
@@ -36,8 +36,8 @@ export class SettingsService {
     {
       title:'Setting',
       path: '/pages/setting',
-      active: false,
-      needlogin: true,
+      active: true,
+      needlogin: false,
     },
     {
       title:'Sync',
@@ -52,33 +52,60 @@ export class SettingsService {
       tab:'tab1',
       icon:'home',
       open: true,
+      needlogin: false,
 
     },
+    //dairy employye chalan
     {
       title:'SellItem',
       tab:'sellitem',
       icon:'cash',
-      open: false,
+      open: true,
+      needlogin: false,
+
 
     },
+    //retail
     {
       title:'Sell Item',
       tab:'calculator',
-      icon:'cash',
-      open: true,
+      icon:'calculator',
+      open: false,
+      needlogin: false,
 
     },
+    {
+      title:'Due Payment',
+      tab:'customerpayment',
+      icon:'cash',
+      open: false,
+      needlogin: false,
+
+    },
+    {
+      title:'collection',
+      tab:'customer-collection',
+      icon:'cash',
+      open: false,
+      needlogin: false,
+
+    },
+
+
+    //dairy data collection
     {
       title:'Milk',
       tab:'tab2',
       icon:'beaker',
-      open: false,
+      open: true,
+      needlogin: false,
 
     }, {
       title:'Fat SNF',
       tab:'snffat',
       icon:'calculator',
-      open: false,
+      open: true,
+      needlogin: false,
 
     },
     {
@@ -86,6 +113,7 @@ export class SettingsService {
       tab:'advance',
       icon:'triangle',
       open: false,
+      needlogin: false,
 
     },
     {
@@ -93,6 +121,7 @@ export class SettingsService {
       tab:'payment',
       icon:'triangle',
       open: false,
+      needlogin: false,
 
     },
     ,
@@ -101,13 +130,15 @@ export class SettingsService {
       tab:'report',
       icon:'triangle',
       open: false,
+      needlogin: false,
 
     },
     {
       title:'Farmers',
       tab:'farmers',
       icon:'people',
-      open: false,
+      open: true,
+      needlogin: false,
 
     },
   ];
@@ -115,19 +146,27 @@ export class SettingsService {
   sync={
     center:{
       f:true,
-      b:true
+      b:false
     },
     milk:{
-      f:true,
+      f:false,
       b:true
     },
     snffat:{
-      f:true,
+      f:false,
       b:true
     },
     farmer:{
       f:true,
-      b:true
+      b:false
+    },
+    bills:{
+      f:false,
+      b:true,
+    },
+    customer:{
+      f:true,
+      b:false,
     }
   };
 
@@ -147,6 +186,13 @@ export class SettingsService {
       localStorage.setItem('rate_type',this.rateType.toString());
     }
 
+    const selectParticularSTR=localStorage.getItem('setSelectParticular');
+    if(selectParticularSTR!=null){
+        this.selectParticular=JSON.parse(selectParticularSTR);
+    }else{
+      localStorage.setItem('setSelectParticular',this.selectParticular.toString());
+    }
+
     this.setup=localStorage.getItem('url')!=null;
     if(this.setup){
       this.url=localStorage.getItem('url');
@@ -161,5 +207,11 @@ export class SettingsService {
    setRateType(type){
     this.rateType=type;
     localStorage.setItem('rate_type',this.rateType.toString());
+   }
+
+   setSelectParticular(val){
+    this.selectParticular=val;
+    localStorage.setItem('setSelectParticular',this.selectParticular.toString());
+
    }
 }
