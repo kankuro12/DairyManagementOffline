@@ -160,4 +160,7 @@ export default [
   );`,
   `ALTER TABLE customers
   ADD area_id integer default 0;`
+  ,
+  `ALTER TABLE snffats
+  ADD session integer default 1;`
 ];

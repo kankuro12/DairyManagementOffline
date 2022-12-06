@@ -37,6 +37,8 @@ export class SnffatComponent implements OnInit {
   loaded = false;
   initiated = false;
   date = '';
+
+  session = "Morning";
   //data take
   no: number;
   snf: number;
@@ -64,6 +66,7 @@ export class SnffatComponent implements OnInit {
       this.date = d4.format('YYYY-MM-DD');
       this.todayDate=Helper.dateINT(this.date);
 
+      this.session = (new Date()).getHours() < 12 ? 'Morning' : 'Evening';
       const apiPer="("+this.auth.user.apiper.join(',')+")";
 
       this.centers = await this.db.select(Center, `select id,name from centers where id in ${apiPer}`, []);
@@ -83,8 +86,8 @@ export class SnffatComponent implements OnInit {
   async loadData() {
     const curDate = Helper.dateINT(this.date);
     this.today= curDate==this.todayDate;
-    this.farmers = await this.db.select(Farmer, 'select * from farmers where center_id=?', [this.center_id]);
-    this.snffats = await this.db.selectLoose("select s.*,f.no,f.name from snffats s join farmers f on f.id=s.user_id where date=?", [curDate]);
+    this.farmers = await this.db.select(Farmer, 'select * from farmers where center_id=? ', [this.center_id]);
+    this.snffats = await this.db.selectLoose("select s.*,f.no,f.name from snffats s join farmers f on f.id=s.user_id where date=? and session=?", [curDate,this.getSession()]);
     console.log(this.snffats, "data");
     this.loaded = true;
   }
@@ -108,7 +111,7 @@ export class SnffatComponent implements OnInit {
       }
     }
 
-    this.snffat = new SnfFat({ user_id: this.farmer.id, snf: this.snf, fat: this.fat, date: Helper.dateINT(this.date) });
+    this.snffat = new SnfFat({ user_id: this.farmer.id, snf: this.snf, fat: this.fat, date: Helper.dateINT(this.date),session:this.getSession() });
     this.snffat.save()
       .then((s: SnfFat) => {
         this.snffats.unshift({ ...s, no: this.farmer.no, name: this.farmer.name });
@@ -120,6 +123,10 @@ export class SnffatComponent implements OnInit {
       .catch((err) => {
 
       });
+  }
+
+  getSession(): number{
+    return this.session=="Morning"?0:1;
   }
 
   check(e,type) {
@@ -204,6 +211,7 @@ export class SnffatComponent implements OnInit {
       const data = {
         center_id: this.center_id,
         date: this.date,
+        session: this.getSession(),
         data: this.snffats.map((o) => {
           return { id: o.user_id, snf: o.snf, fat: o.fat };
         })

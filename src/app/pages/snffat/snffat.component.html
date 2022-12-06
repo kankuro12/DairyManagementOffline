@@ -35,6 +35,13 @@
             <input type="text" [(ngModel)]="date" class="form-control">
           </div>
         </div>
+        <div class="col-md-3 col-6">
+          <strong>Session</strong>
+          <select class="form-control" [(ngModel)]="session">
+            <option value="Morning">Morning</option>
+            <option value="Evening">Evening</option>
+          </select>
+        </div>
 
         <div class="col-md-3 col-6 pt-4">
 
@@ -46,7 +53,7 @@
     <div *ngIf="loaded ">
       <div class="d-flex justify-content-between">
         <span>
-          {{center.name}}
+          {{center.name}}, {{session}}
         </span>
         <span>
           {{date}}
@@ -111,7 +118,7 @@
     </ng-template>
   </ion-modal>
 </ion-content>
-<ion-content>
+<ion-content *ngIf="!auth.hasPermission(['02.11'])">
   <h6 class="p-2"  *ngIf=" !(auth.hasPermission(['02.11']))">
     You Dont Have permssion to entry Snf Fat
   </h6>

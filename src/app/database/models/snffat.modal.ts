@@ -7,11 +7,12 @@ export class SnfFat extends Modal {
   date: number;
   snf: number;
   fat: number;
+  session: number;
   user_id: number;
 
 
   table="snffats";
-  columns=['id','date','snf','fat','user_id'];
+  columns=['id','date','snf','fat','session','user_id'];
 
   constructor(columns={}){
     super();
