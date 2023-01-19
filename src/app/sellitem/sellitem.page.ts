@@ -1,3 +1,5 @@
+import { rates } from './../database/structure/rates';
+import { RatesService } from './../services/rates.services';
 import { CustomerBalance } from './../database/structure/customer.balance.data';
 import { CustomerService } from './../services/customer.service';
 import { parse } from 'querystring';
@@ -70,8 +72,11 @@ export class SellitemPage implements OnInit {
   //areaInfo
   areaRates: AreaRate[]=[];
   area: Area;
+  rates: rates[]=[];
 
-  constructor(private db: SqlliteService, private api: ApiService, public auth: AuthService,public areaData: AreaDataService,private CustomerManager: CustomerService) { }
+  constructor(private db: SqlliteService, private api: ApiService, public auth: AuthService,public areaData: AreaDataService,
+    private ratesData: RatesService,
+    private CustomerManager: CustomerService) { }
   async ngOnInit() {
     this.hasPermission=this.auth.hasPermission(['15.06','15.07']);
     if(this.hasPermission){
@@ -135,12 +140,14 @@ export class SellitemPage implements OnInit {
   async loadCustomerData() {
     this.customerLoaded = false;
     this.currentCustomer=this.customers.find(o=>o.phone==this.phone);
+    console.log(this.currentCustomer);
     this.sellItems = await this.db.select(ChalanSellItem, 'select * from chalansellitems where phone=? and date=? and user_id=?', [this.phone, this.curDate, this.auth.user.id]);
     this.payments = await this.db.select(ChalanPayment, 'select * from chalanpayments where phone=? and date=? and user_id=?', [this.phone, this.curDate, this.auth.user.id]);
     this.customerLoaded = true;
     this.resetItem();
     this.area=this.areaData.data.areas.find(o=>o.id==this.currentCustomer.area_id);
     this.areaRates=this.areaData.data.rates.filter(o=>o.area_id==this.currentCustomer.area_id);
+    this.rates=this.ratesData.data.filter(o=>o.phone==this.currentCustomer.phone);
     const customerBalance=this.CustomerManager.data.find(o=>o.phone==this.currentCustomer.phone);
     if(customerBalance!=undefined){
       this.balance=customerBalance.dr-customerBalance.cr;
@@ -155,13 +162,20 @@ export class SellitemPage implements OnInit {
     console.log(this.items, this.item_id);
     const item = this.items.find(o => o.item_id == this.item_id);
     const areaRate=this.areaRates.find(o=>o.item_id==this.item_id);
-    if(areaRate!=undefined && areaRate!=null){
-      this.rate =parseFloat( areaRate.sell_price);
-
+    const localRates=this.rates.find(o=>o.item_id==this.item_id);
+    if(localRates!=undefined && localRates!=null){
+      this.rate =parseFloat(localRates.rate );
     }else{
+      if(areaRate!=undefined && areaRate!=null){
+        this.rate =parseFloat( areaRate.sell_price);
 
-      this.rate = item.rate;
+      }else{
+
+        this.rate = item.rate;
+      }
+
     }
+
     this.qty = 1;
     this.calculate();
   }

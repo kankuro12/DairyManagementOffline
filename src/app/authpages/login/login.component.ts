@@ -14,8 +14,8 @@ import { type } from 'os';
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
-  phone= '9820751518';
-  password= '9820751518';
+  phone= '9841691393';
+  password= '9841691393';
 
   saveLogin = false;
   // phone = '';

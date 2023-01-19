@@ -1,3 +1,4 @@
+import { RatesService } from './rates.services';
 import { AreaDataService } from './area.data.services';
 /* eslint-disable @typescript-eslint/prefer-for-of */
 /* eslint-disable eqeqeq */
@@ -22,7 +23,7 @@ export class AuthService {
   authprogress: EventEmitter<any> = new EventEmitter<any>();
   authend: EventEmitter<any> = new EventEmitter<any>();
   private logged = false;
-  constructor(private api: ApiService, private router: Router,private areaData: AreaDataService) {
+  constructor(private api: ApiService, private router: Router,private areaData: AreaDataService,private rates: RatesService) {
   }
 
   login(phone, password) {
@@ -54,6 +55,7 @@ export class AuthService {
           this.authend.emit(true);
           localStorage.setItem('_xcbphone',phone);
           this.areaData.pull();
+          this.rates.pull();
         }, (err) => {
           if (err.status == 0) {
             this.offlineLogin(phone, password);
