@@ -163,4 +163,15 @@ export default [
   ,
   `ALTER TABLE snffats
   ADD session integer default 1;`
+  ,
+  `
+  create table IF NOT EXISTS extraitems(
+    id INTEGER PRIMARY KEY,
+    itemin decimal(10,2),
+    itemout decimal(10,2),
+    date INTEGER,
+    phone text,
+    name text,
+    sync INTEGER default 0
+  );`
 ];

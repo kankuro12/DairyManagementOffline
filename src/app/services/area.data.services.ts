@@ -21,11 +21,5 @@ export class AreaDataService {
     }
   }
 
-  pull(){
-    this.api.get('areas')
-    .subscribe((data: AreaData)=>{
-      this.data=data;
-      localStorage.setItem('area.data',JSON.stringify(this.data));
-    });
-  }
+
 }

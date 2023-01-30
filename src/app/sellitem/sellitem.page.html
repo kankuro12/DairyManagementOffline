@@ -52,17 +52,21 @@
     <div *ngIf="customerLoaded">
       <hr>
       <div class="row mx-0 mb-2 shadow">
-        <div class="col-6 p-0">
+        <div class="col-4 p-0">
           <button class="btn w-100 no-border-radius" [ngClass]="{'btn-selected': sellingType===1}"
             (click)="sellingType=1"> Sales</button>
         </div>
-        <div class="col-6 p-0">
+        <div class="col-4 p-0">
           <button class="btn w-100 no-border-radius" [ngClass]="{'btn-selected': sellingType===2}"
             (click)="sellingType=2"> Payment</button>
         </div>
+        <div class="col-4 p-0">
+          <button class="btn w-100 no-border-radius" [ngClass]="{'btn-selected': sellingType===3}"
+            (click)="sellingType=3"> Packaging </button>
+        </div>
         <div class="col-6 p-0"></div>
       </div>
-      <div [ngClass]="{'d-none': sellingType===1}">
+      <div [ngClass]="{'d-none': sellingType!==2}">
         <div class="row">
           <div class="col-8">
             <label>Payment Amount</label>
@@ -96,7 +100,7 @@
           </tr>
         </table>
       </div>
-      <div [ngClass]="{'d-none': sellingType===2}">
+      <div [ngClass]="{'d-none': sellingType!==1}">
 
         <div class="row">
           <div class="col-6">
@@ -158,6 +162,27 @@
             <td></td>
           </tr>
         </table>
+      </div>
+      <div [ngClass]="{'d-none': sellingType!==3}" >
+        <div class="row">
+          <div class="col-6">
+            <label>Item</label>
+            <select class="form-control" [(ngModel)]="extra_item_id" >
+              <option *ngFor="let item of ExtraItemData.data" value="{{item.id}}">{{item.name}}</option>
+            </select>
+          </div>
+          <div class="col-3">
+            <label>Out</label>
+            <input type="number" class="form-control"  [(ngModel)]="extra_item_out">
+          </div>
+          <div class="col-3" >
+            <label>In</label>
+            <input type="number" class="form-control" [(ngModel)]="extra_item_in">
+          </div>
+          <div class="col-12 pt-1">
+            <button class="btn btn-primary w-100" (click)="addExtraItem()">Add</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>

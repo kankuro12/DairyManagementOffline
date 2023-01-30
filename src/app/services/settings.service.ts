@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 import { Injectable, Type } from '@angular/core';
 
 @Injectable({
@@ -172,6 +173,8 @@ export class SettingsService {
 
 
 
+  customerRoutes=[];
+
 
   centers=[];
   setup=false;
@@ -179,6 +182,7 @@ export class SettingsService {
 
   open=[true,true,true,false,false];
   constructor() {
+
     const rateTypeSTR=localStorage.getItem('rate_type');
     if(rateTypeSTR!=null){
         this.rateType=parseInt(rateTypeSTR,10);
@@ -200,6 +204,10 @@ export class SettingsService {
     const centersSTR=localStorage.getItem('centers');
     if(centersSTR!=null){
       this.centers=JSON.parse(centersSTR);
+    }
+    const customerRouteStr=localStorage.getItem('customerroute.items');
+    if(customerRouteStr!=null && customerRouteStr!=undefined){
+      this.customerRoutes=JSON.parse(customerRouteStr);
     }
    }
 

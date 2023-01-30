@@ -1,3 +1,5 @@
+import { ExtraItemService } from './extraitem.service';
+import { ExtraItem } from './../database/structure/extraItem';
 import { RatesService } from './rates.services';
 import { AreaDataService } from './area.data.services';
 /* eslint-disable @typescript-eslint/prefer-for-of */
@@ -7,6 +9,7 @@ import { EventEmitter, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import md5 from "crypto-js/md5";
 import { parse } from 'querystring';
+import { settings } from 'cluster';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +26,7 @@ export class AuthService {
   authprogress: EventEmitter<any> = new EventEmitter<any>();
   authend: EventEmitter<any> = new EventEmitter<any>();
   private logged = false;
-  constructor(private api: ApiService, private router: Router,private areaData: AreaDataService,private rates: RatesService) {
+  constructor(private api: ApiService, private router: Router) {
   }
 
   login(phone, password) {
@@ -54,8 +57,7 @@ export class AuthService {
           this.api.setHeader(res.token);
           this.authend.emit(true);
           localStorage.setItem('_xcbphone',phone);
-          this.areaData.pull();
-          this.rates.pull();
+
         }, (err) => {
           if (err.status == 0) {
             this.offlineLogin(phone, password);

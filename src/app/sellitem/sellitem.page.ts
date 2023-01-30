@@ -1,3 +1,5 @@
+import { ExtraItemService } from './../services/extraitem.service';
+import { ExtraItem } from './../database/structure/extraItem';
 import { rates } from './../database/structure/rates';
 import { RatesService } from './../services/rates.services';
 import { CustomerBalance } from './../database/structure/customer.balance.data';
@@ -49,6 +51,10 @@ export class SellitemPage implements OnInit {
   //tab
   sellingType = 1;
 
+  //Extraitems
+  extra_item_id: number = null;
+  extra_item_in: number = null;
+  extra_item_out: number = null;
   //payment
   paymentAmount: number;
   //permission
@@ -76,6 +82,7 @@ export class SellitemPage implements OnInit {
 
   constructor(private db: SqlliteService, private api: ApiService, public auth: AuthService,public areaData: AreaDataService,
     private ratesData: RatesService,
+    public ExtraItemData: ExtraItemService,
     private CustomerManager: CustomerService) { }
   async ngOnInit() {
     this.hasPermission=this.auth.hasPermission(['15.06','15.07']);
@@ -86,7 +93,7 @@ export class SellitemPage implements OnInit {
       this.date = d4.format('YYYY-MM-DD');
       this.curDate = Helper.dateINT(this.date);
       this.searchCustomer();
-      this.CustomerManager.pull();
+
     }
 
   }
@@ -103,14 +110,17 @@ export class SellitemPage implements OnInit {
 
       if(res.status){
         const chalanItems=res.data;
+        this.CustomerManager.pull();
         for (let index = 0; index < chalanItems.length; index++) {
           const chalanItem = chalanItems[index];
           chalanItem.date = this.curDate;
           chalanItem.user_id = this.auth.user.id;
           const f = new ChalanItem(chalanItem);
           await f.save();
+
           this.items.push(f);
           this.showInterface();
+
         }
       }else{
         alert('No chalan found for date '+this.date);
@@ -343,6 +353,11 @@ export class SellitemPage implements OnInit {
     }else{
       return '';
     }
+  }
+
+  //XXX extra item
+  addExtraItem(){
+
   }
 
 }
