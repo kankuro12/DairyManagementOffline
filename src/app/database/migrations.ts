@@ -173,5 +173,20 @@ export default [
     phone text,
     name text,
     sync INTEGER default 0
-  );`
+  );`,
+  `ALTER TABLE extraitems
+  ADD extra_item_id integer;`
+  ,
+  `ALTER TABLE extraitems
+  ADD user_id integer;`
+  ,
+  `ALTER TABLE milkamounts
+  ADD sync integer default 0;`
+  ,
+  `ALTER TABLE milkamounts
+  ADD center_id integer;`
+  ,
+  `ALTER TABLE milkamounts
+  ADD date integer;`
+  ,
 ];

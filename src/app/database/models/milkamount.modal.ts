@@ -10,10 +10,12 @@ export class MilkAmount extends Modal {
   rate: number;
   amount: number;
   user_id: number;
-
+  center_id: number;
+  date: number;
+  sync = 0;
 
   table="milkamounts";
-  columns=['id','session','snf','fat','rate','amount','user_id'];
+  columns=['id','session','snf','fat','rate','amount','user_id','center_id','date','sync'];
 
   constructor(columns={}){
     super();

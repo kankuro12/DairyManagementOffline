@@ -14,8 +14,8 @@ import { type } from 'os';
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
-  phone= '9841691393';
-  password= '9841691393';
+  phone= '23232323';
+  password= '23232323';
 
   saveLogin = false;
   // phone = '';
@@ -43,10 +43,10 @@ export class LoginComponent implements OnInit {
   }
 
   login() {
-    if (this.phone.length < 10) {
-      alert('Please enter phone no');
-      return;
-    }
+    // if (this.phone.length < 10) {
+    //   alert('Please enter phone no');
+    //   return;
+    // }
     if(this.saveLogin){
       this.auth.login(this.phone.toString(), this.phone.toString());
       return;

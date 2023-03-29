@@ -183,6 +183,26 @@
             <button class="btn btn-primary w-100" (click)="addExtraItem()">Add</button>
           </div>
         </div>
+        <hr>
+        <table class="table">
+          <tr>
+            <th>Name</th>
+            <th>Out</th>
+            <th>In</th>
+            <th></th>
+          </tr>
+          <tr *ngFor="let item of extraItems">
+            <td>
+              {{item.name}}
+            </td>
+            <td>
+              {{item.itemout}}
+            </td>
+            <td>
+              {{item.itemin}}
+            </td>
+          </tr>
+        </table>
       </div>
     </div>
   </div>

@@ -59,6 +59,7 @@ const routes: Routes = [
     path: 'customer-collection',
     loadChildren: () => import('./customer-collection/customer-collection.module').then( m => m.CustomerCollectionPageModule)
   }
+
 ];
 @NgModule({
   imports: [

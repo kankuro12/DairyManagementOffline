@@ -93,19 +93,27 @@ export class SettingsService {
     },
 
 
+    {
+      title:'Collection',
+      tab:'milkfatsnf',
+      icon:'beaker',
+      open: true,
+      needlogin: false,
+
+    },
     //dairy data collection
     {
       title:'Milk',
       tab:'tab2',
       icon:'beaker',
-      open: true,
+      open: false,
       needlogin: false,
 
     }, {
       title:'Fat SNF',
       tab:'snffat',
       icon:'calculator',
-      open: true,
+      open: false,
       needlogin: false,
 
     },

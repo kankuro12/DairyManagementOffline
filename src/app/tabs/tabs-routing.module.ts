@@ -48,6 +48,10 @@ const routes: Routes = [
         loadChildren:()=> import('../customer-collection/customer-collection.module').then(m=>m.CustomerCollectionPageModule)
       },
       {
+        path: 'milkfatsnf',
+        loadChildren: () => import('../milkfatsnf/milkfatsnf.module').then( m => m.MilkfatsnfPageModule)
+      },
+      {
         path: 'report',
         component: FarmerReportComponent
       },

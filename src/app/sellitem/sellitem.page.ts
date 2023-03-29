@@ -1,3 +1,4 @@
+import { ExtraItemModal } from './../database/models/extraitem.modal';
 import { ExtraItemService } from './../services/extraitem.service';
 import { ExtraItem } from './../database/structure/extraItem';
 import { rates } from './../database/structure/rates';
@@ -55,6 +56,7 @@ export class SellitemPage implements OnInit {
   extra_item_id: number = null;
   extra_item_in: number = null;
   extra_item_out: number = null;
+  extraItems: ExtraItemModal[];
   //payment
   paymentAmount: number;
   //permission
@@ -93,6 +95,7 @@ export class SellitemPage implements OnInit {
       this.date = d4.format('YYYY-MM-DD');
       this.curDate = Helper.dateINT(this.date);
       this.searchCustomer();
+      this.CustomerManager.pull();
 
     }
 
@@ -110,7 +113,7 @@ export class SellitemPage implements OnInit {
 
       if(res.status){
         const chalanItems=res.data;
-        this.CustomerManager.pull();
+        // this.CustomerManager.pull();
         for (let index = 0; index < chalanItems.length; index++) {
           const chalanItem = chalanItems[index];
           chalanItem.date = this.curDate;
@@ -164,6 +167,7 @@ export class SellitemPage implements OnInit {
     }else{
       this.balance=0;
     }
+    this.extraItems=await this.db.select(ExtraItemModal,"select * from extraitems  where phone=? and date=? and user_id=?",[this.phone, this.curDate, this.auth.user.id]);
     console.log(this.balance);
     this.calculateTotal();
 
@@ -337,7 +341,7 @@ export class SellitemPage implements OnInit {
   }
 
   searchCustomer(){
-    this.searchList=this.customers.filter(o=>o.name.toLowerCase().startsWith(this.searchKeyword.toLowerCase())|| o.phone.startsWith(this.searchKeyword));
+    this.searchList=this.customers.filter(o=>(o.name.toLowerCase().startsWith(this.searchKeyword.toLowerCase())|| o.phone.startsWith(this.searchKeyword)) && this.CustomerManager.routeCustomers.includes(o.phone));
   }
   selectCustomer(p){
     this.phone=p;
@@ -357,7 +361,35 @@ export class SellitemPage implements OnInit {
 
   //XXX extra item
   addExtraItem(){
+    const index=this.extraItems.findIndex(o=>o.extra_item_id==this.extra_item_id);
+    const extra_item=this.ExtraItemData.data.find(o=>o.id==this.extra_item_id);
+    if(index>-1){
+      if(!(confirm(`${extra_item.name} already added to list do you want to update`))){
+        return;
+      }
+    }else{
+      const customer_extra_item=new ExtraItemModal(
+        {
+          name:extra_item.name,
+          extra_item_id:this.extra_item_id,
+          itemout:this.extra_item_out,
+          itemin:this.extra_item_in,
+          phone:this.phone,
+          user_id:this.auth.user.id,
+          date: this.date
+        }
+        );
 
+        customer_extra_item.save()
+        .then((i: ExtraItemModal)=>{
+          this.extraItems.push(i);
+        })
+        .catch((err)=>{
+          console.log(err);
+
+          alert('Some error occured');
+        });
+    }
   }
 
 }

@@ -383,8 +383,6 @@ export class Tab2Page implements OnInit {
 
   currentEstimate() {
     this.updateTotal();
-
-
   }
 
 

@@ -9,14 +9,13 @@ export class ExtraItemModal extends Modal{
   phone: string;
   name: string;
   sync: number;
+  extra_item_id: number;
+  user_id: number;
 
-  table="centers";
-  columns=['id','itemin','itemout','date','phone','name','sync'];
+  table="extraitems";
+  columns=['id','itemin','itemout','date','phone','name','sync','extra_item_id','user_id'];
   constructor(columns: any){
     super();
     this.init(columns);
   }
-
-
-
 }
