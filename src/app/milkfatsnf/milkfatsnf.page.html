@@ -52,15 +52,17 @@
     <div *ngIf="dateLoaded">
 
       <div class="data {{nofocused?'':'d-none'}}" >
-        <div class="row m-0">
-          <div class="col-10 p-0">
-            <input type="text"  id="sno" (input)="selectFarmers($event)" class="form-control no-border-radius no-outline" placeholder="Search Farmers">
+        <div class="bg-white sticky-top">
+          <div class="row m-0">
+            <div class="col-10 p-0">
+              <input type="text"  id="sno" (input)="selectFarmers($event)" class="form-control no-border-radius no-outline" placeholder="Search Farmers">
 
-          </div>
-          <div class="col-2 text-end">
-            <button class="btn btn-danger " (click)="resetSelectFarmer()">
-              &times;
-            </button>
+            </div>
+            <div class="col-2 text-end">
+              <button class="btn btn-danger " (click)="resetSelectFarmer()">
+                &times;
+              </button>
+            </div>
           </div>
         </div>
         <table class="table" >

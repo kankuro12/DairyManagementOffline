@@ -24,7 +24,9 @@ export class MilkfatsnfPage implements OnInit {
   centers: Center[] = [];
   center_id: number;
   farmers: Farmer[] = [];
+  //search
   selectedFarmers: Farmer[] = [];
+  ratio=15;
 
   center: Center= new Center({name:"no center loaded"});
   date: string;
@@ -50,6 +52,8 @@ export class MilkfatsnfPage implements OnInit {
 
   loading: any ;
 
+  storedDate: number=null;
+
 
   constructor(private db: SqlliteService,
     private changeDetection: ChangeDetectorRef,
@@ -61,7 +65,6 @@ export class MilkfatsnfPage implements OnInit {
     private actionSheetController: ActionSheetController) { }
 
   async ngOnInit() {
-    this.auth.offlineLogin("23232323","23232323");
     const apiPer="("+this.auth.user.apiper.join(',')+")";
     this.centers = await this.db.select(Center, `select id,name from centers where id in ${apiPer}`, []);
     if(this.centers.length==1){
@@ -75,15 +78,21 @@ export class MilkfatsnfPage implements OnInit {
     const d4 = new NepaliDate(localDate);
     this.date = d4.format('YYYY-MM-DD');
     this.todayDate= Helper.dateINT(this.date);
-    this.farmers=await this.db.select(Farmer,"select * from farmers");
-    this.selectedFarmers=this.farmers;
+    this.storedDate=this.todayDate;
+    this.farmers=await this.db.select(Farmer,"select * from farmers order by no");
+    if(this.farmers.length>2000){
+      this.ratio=Math.ceil(this.farmers.length *0.05);
+    }
+    this.selectedFarmers=this.farmers.slice(0,this.ratio);
     // this.db.run('delete from milkamounts');
 
   }
 
   async loadData(){
+    this.todayDate= Helper.dateINT(this.date);
     this.dateLoaded=true;
-    this.MilkDatas = await this.db.select(MilkAmount,"select * from milkamounts where center_id ="+this.center_id,[]);
+    // eslint-disable-next-line max-len
+    this.MilkDatas = await this.db.select(MilkAmount,`select * from milkamounts where center_id =${this.center_id} and session=${this.session} and date=${this.todayDate}`,[]);
     console.log(this.MilkDatas);
 
     // eslint-disable-next-line arrow-body-style
@@ -91,6 +100,7 @@ export class MilkfatsnfPage implements OnInit {
       const farmer=this.farmers.find(f=>f.id==o.user_id);
       return {
         ...o,
+
         name:farmer.name,
         no:farmer.no,
       };
@@ -100,7 +110,7 @@ export class MilkfatsnfPage implements OnInit {
 
 
   resetSelectFarmer(){
-    this.selectedFarmers=this.farmers;
+    this.selectedFarmers=this.farmers.slice(0,this.ratio);
     this.nofocused=false;
  }
 
@@ -109,7 +119,7 @@ export class MilkfatsnfPage implements OnInit {
 
     this.no=no;
 
-    this.selectedFarmers=this.farmers;
+    this.selectedFarmers=this.farmers.slice(0,this.ratio);
     this.nofocused=false;
     document.getElementById('milk').focus();
   }
@@ -120,11 +130,11 @@ export class MilkfatsnfPage implements OnInit {
     console.log(e.target.id);
     const keyword=e.target.value;
     if(e.target.id=="sno"){
-      this.selectedFarmers=this.farmers.filter(o=>o.name.toLowerCase().startsWith(keyword.toLowerCase()));
+      this.selectedFarmers=this.farmers.filter(o=>o.name.toLowerCase().startsWith(keyword.toLowerCase())).slice(0,this.ratio);
 
     }else{
 
-      this.selectedFarmers=this.farmers.filter(o=>o.no.toString().startsWith(keyword));
+      this.selectedFarmers=this.farmers.filter(o=>o.no.toString().startsWith(keyword)).slice(0,this.ratio);
     }
   }
 
@@ -207,6 +217,7 @@ export class MilkfatsnfPage implements OnInit {
       this.fat=null;
       this.amount=null;
       document.getElementById('no').focus();
+      this.resetSelectFarmer();
     });
   }
 
