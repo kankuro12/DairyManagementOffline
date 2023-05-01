@@ -5,6 +5,7 @@ import { Center } from './../database/models/center.modal';
 import { Farmer } from './../database/models/farmer.modal';
 import { Component, OnInit } from '@angular/core';
 import { SqlliteService } from '../services/sqllite.service';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-farmers',
@@ -17,14 +18,16 @@ export class FarmersPage implements OnInit {
   centers: Center[]=[];
   center_id: number;
 
-  constructor(private db: SqlliteService) {}
+  constructor(private db: SqlliteService,private auth: AuthService) {}
   ngOnInit() {
     this.loadData();
   }
 
 
   async loadData(){
-    this.centers=await this.db.select(Center,"select id, name from centers",[]);
+    const apiPer="("+this.auth.user.apiper.join(',')+")";
+
+    this.centers = await this.db.select(Center, `select id,name from centers where id in ${apiPer}`, []);
     this.farmerList=await this.db.select(Farmer,"select * from farmers",[]);
     if(this.centers.length>0){
       this.center_id=this.centers[0].id;

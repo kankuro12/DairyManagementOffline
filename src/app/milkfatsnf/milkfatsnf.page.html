@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>milkfatsnf</ion-title>
+    <ion-title>Milk Collection</ion-title>
     <ion-buttons slot="end"  *ngIf="dateLoaded">
       <ion-button color="primary" (click)="uploadData()">Upload</ion-button>
       <ion-button color="danger"  (click)="dateLoaded=false">Reset</ion-button>
@@ -12,6 +12,7 @@
   <div  *ngIf=" (auth.hasPermission(['02.09','02.02.11']))">
 
     <div *ngIf="!dateLoaded">
+
       <div class="row m-0">
         <div class="col-md-3 col-6" *ngIf="centers.length>1">
           <strong>Center</strong>
@@ -53,6 +54,7 @@
 
       <div class="data {{nofocused?'':'d-none'}}" >
         <div class="bg-white sticky-top">
+
           <div class="row m-0">
             <div class="col-10 p-0">
               <input type="text"  id="sno" (input)="selectFarmers($event)" class="form-control no-border-radius no-outline" placeholder="Search Farmers">
@@ -71,6 +73,9 @@
               <td>{{farmer.name}}</td>
           </tr>
         </table>
+      </div>
+      <div>
+        Total Milk: {{totalMilk}}
       </div>
           <div class="row m-0">
             <div class="col-3 p-0"><input type="number" [(ngModel)]="no"  id="no" placeholder="no" (blur)="focusOut($event)" (focus)="nofocused=true;selectFarmers($event)" class="form-control no-border-radius no-outline" (input)="selectFarmers($event)" required="required"></div>
@@ -121,6 +126,7 @@
         </ion-content>
       </ng-template>
     </ion-modal>
+
   </div>
 
   <h6 class="p-2"  *ngIf=" !(auth.hasPermission(['02.09','02.11']))">

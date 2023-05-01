@@ -55,6 +55,8 @@ export class MilkfatsnfPage implements OnInit {
   storedDate: number=null;
 
 
+  totalMilk=0;
+
   constructor(private db: SqlliteService,
     private changeDetection: ChangeDetectorRef,
     private alertController: AlertController,
@@ -66,6 +68,7 @@ export class MilkfatsnfPage implements OnInit {
 
   async ngOnInit() {
     const apiPer="("+this.auth.user.apiper.join(',')+")";
+
     this.centers = await this.db.select(Center, `select id,name from centers where id in ${apiPer}`, []);
     if(this.centers.length==1){
       this.center=this.centers[0];
@@ -79,7 +82,7 @@ export class MilkfatsnfPage implements OnInit {
     this.date = d4.format('YYYY-MM-DD');
     this.todayDate= Helper.dateINT(this.date);
     this.storedDate=this.todayDate;
-    this.farmers=await this.db.select(Farmer,"select * from farmers order by no");
+    this.farmers=await this.db.select(Farmer,"select * from farmers order by no ",[]);
     if(this.farmers.length>2000){
       this.ratio=Math.ceil(this.farmers.length *0.05);
     }
@@ -89,14 +92,17 @@ export class MilkfatsnfPage implements OnInit {
   }
 
   async loadData(){
+    this.totalMilk=0;
     this.todayDate= Helper.dateINT(this.date);
     this.dateLoaded=true;
     // eslint-disable-next-line max-len
     this.MilkDatas = await this.db.select(MilkAmount,`select * from milkamounts where center_id =${this.center_id} and session=${this.session} and date=${this.todayDate}`,[]);
     console.log(this.MilkDatas);
 
+    let totMilk=0;
     // eslint-disable-next-line arrow-body-style
     this.MilkDatas=this.MilkDatas.map(o=>{
+      totMilk+=o.amount;
       const farmer=this.farmers.find(f=>f.id==o.user_id);
       return {
         ...o,
@@ -105,6 +111,8 @@ export class MilkfatsnfPage implements OnInit {
         no:farmer.no,
       };
     });
+
+    this.totalMilk=totMilk;
 
   }
 
@@ -130,11 +138,13 @@ export class MilkfatsnfPage implements OnInit {
     console.log(e.target.id);
     const keyword=e.target.value;
     if(e.target.id=="sno"){
-      this.selectedFarmers=this.farmers.filter(o=>o.name.toLowerCase().startsWith(keyword.toLowerCase())).slice(0,this.ratio);
+      this.selectedFarmers=this.farmers.filter(
+        o=>o.name.toLowerCase().startsWith(keyword.toLowerCase()) && o.center_id==this.center_id).slice(0,this.ratio);
 
     }else{
 
-      this.selectedFarmers=this.farmers.filter(o=>o.no.toString().startsWith(keyword)).slice(0,this.ratio);
+      this.selectedFarmers=this.farmers.filter(
+        o=>o.no.toString().startsWith(keyword)  && o.center_id==this.center_id ).slice(0,this.ratio);
     }
   }
 
@@ -207,6 +217,7 @@ export class MilkfatsnfPage implements OnInit {
     })).save()
     .then((milkAmount: any)=>{
       console.log(milkAmount);
+      this.totalMilk+=milkAmount.amount;
 
       const _farmer=this.farmers.find(f=>f.id==milkAmount.user_id);
       milkAmount.name=_farmer.name;
@@ -243,7 +254,10 @@ export class MilkfatsnfPage implements OnInit {
       this.db.run('update milkamounts set amount=?,fat=?,snf=? where id=?',[this.e_amount,this.e_fat,this.e_snf,this.e_id])
       .then(()=>{
         const index=this.MilkDatas.findIndex(o=>o.id==this.e_id);
+        const milkAmount=this.MilkDatas[index];
+        this.totalMilk-=  this.MilkDatas[index].amount;
         this.MilkDatas[index].amount=this.e_amount;
+        this.totalMilk+=  this.MilkDatas[index].amount;
         this.MilkDatas[index].fat=this.e_fat;
         this.MilkDatas[index].snf=this.e_snf;
       });
@@ -258,6 +272,9 @@ export class MilkfatsnfPage implements OnInit {
       this.db.run('delete from milkamounts where id=?',[this.e_id])
       .then(()=>{
         const index=this.MilkDatas.findIndex(o=>o.id==this.e_id);
+        const milkAmount=this.MilkDatas[index];
+        this.totalMilk-=milkAmount.amount;
+
         this.MilkDatas.splice(index,1);
         this.resetEdit();
       });
