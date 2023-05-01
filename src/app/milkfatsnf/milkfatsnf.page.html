@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Milk Collection</ion-title>
+    <ion-title> {{dateLoaded?date:"Milk Collection"}}</ion-title>
     <ion-buttons slot="end"  *ngIf="dateLoaded">
       <ion-button color="primary" (click)="uploadData()">Upload</ion-button>
       <ion-button color="danger"  (click)="dateLoaded=false">Reset</ion-button>
