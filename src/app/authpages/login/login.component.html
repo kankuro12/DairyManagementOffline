@@ -17,7 +17,7 @@
         <input type="password" [(ngModel)]="password" placeholder="Enter Password">
       </div>
       <div class="p-2">
-        <input type="checkbox" [checked]="saveLogin" (change)="changeSaveLogin($event)"> <strong class="ms-2">Phone as password</strong>
+        <input type="checkbox" [checked]="saveLogin" (change)="changeSaveLogin($event)"> <strong class="ms-2">Save Phone No</strong>
       </div>
       <div *ngIf="!auth.loading">
         <div class="btn btn-primary  mt-1 p-2 w-100" (click)="login()">
