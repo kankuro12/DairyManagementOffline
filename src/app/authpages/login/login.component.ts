@@ -14,12 +14,12 @@ import { type } from 'os';
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
-  // phone= '9852078275';
-  // password= '9852078275';
+  phone= '9852078275';
+  password= '9852078275';
 
   saveLogin = false;
-  phone = '';
-  password = '';
+  // phone = '';
+  // password = '';
 
   constructor(public auth: AuthService, private router: Router,
     private barcodeScanner: BarcodeScanner,

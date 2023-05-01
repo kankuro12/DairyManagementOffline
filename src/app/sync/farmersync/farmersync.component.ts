@@ -47,7 +47,7 @@ export class FarmersyncComponent implements OnInit {
             }
             if (arr.length > 0) {
               try {
-                await this.db.run(`INSERT OR REPLACE   INTO farmers (id, no, name, type, center_id) ${arr.join(",")}`);
+                await this.db.run(`INSERT OR REPLACE   INTO farmers (id, no, name, type, center_id) VALUES ${arr.join(",")}`);
                 arr = [];
               } catch (error) {
                 console.log(error);

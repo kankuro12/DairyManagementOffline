@@ -74,8 +74,13 @@
           </tr>
         </table>
       </div>
-      <div>
-        Total Milk: {{totalMilk}}
+      <div class="d-flex justify-content-between">
+        <span>
+          Total Milk
+        </span>
+        <span>
+          {{totalMilk.toFixed(3)}}
+        </span>
       </div>
           <div class="row m-0">
             <div class="col-3 p-0"><input type="number" [(ngModel)]="no"  id="no" placeholder="no" (blur)="focusOut($event)" (focus)="nofocused=true;selectFarmers($event)" class="form-control no-border-radius no-outline" (input)="selectFarmers($event)" required="required"></div>
@@ -85,10 +90,26 @@
           </div>
         <div class="dataholder" (click)="nofocused=false;">
           <table class="table">
-            <thead><tr><th>No</th><th style="width:100px;">Name</th><th>Milk</th><th>FAT</th><th>SNF</th></tr></thead>
+            <thead>
+              <tr>
+                <th>No</th>
+                <th style="width:100px;">Name</th>
+                <th>Milk</th>
+                <th>FAT</th>
+                <th>SNF</th>
+              </tr>
+            </thead>
             <tbody>
               <tr *ngFor="let milkData of MilkDatas" [ngClass]="{'text-success': milkData.sync===1}"  (dblclick)="showDetail(milkData)">
-                <th>{{milkData.no}}</th><th style="width:100px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap">{{milkData.name}}</th><th>{{milkData.amount}}</th><th>{{milkData.fat}}</th><th>{{milkData.snf}}</th>
+                <th>{{milkData.no}}</th>
+                <th >
+                  <div style="width:100px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap">
+                    {{milkData.name}}
+                  </div>
+                </th>
+                <th>{{milkData.amount}}</th>
+                <th>{{milkData.fat}}</th>
+                <th>{{milkData.snf}}</th>
               </tr>
             </tbody>
           </table>
@@ -108,7 +129,7 @@
         <ion-content class="ion-padding">
           <div class="row">
             <div class="col-4 p-0">
-               <strong>Amount</strong>
+               <strong>Qty</strong>
              </div>
              <div class="col-4 p-0">
               <strong>Fat</strong>

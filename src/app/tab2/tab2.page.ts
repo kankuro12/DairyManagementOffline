@@ -242,6 +242,7 @@ export class Tab2Page implements OnInit {
       } else if (this.session === 'Evening' && milkData.e_amount > 0) {
         needConformation = true;
       }
+
       if (needConformation) {
         this.alertController.create({
           message: `There is already data for farmer no ${localData.no} in ${this.session} Session.Please Choose a Option.`,
@@ -437,7 +438,7 @@ export class Tab2Page implements OnInit {
         this.milkData.save()
           .then((s: MilkData) => {
             const index = this.milkDatas.findIndex(o => o.id == this.milkData.id);
-            const localFarmer = this.farmers.find(o => o.id == this.milkData.user_id);
+            const localFarmer = this.farmers.find(o => o.id == this.milkData.user_id && o.center_id== this.center_id);
             this.isEditing = false;
             this.ee_amount = null;
             this.em_amount = null;

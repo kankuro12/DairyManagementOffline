@@ -171,9 +171,9 @@ export class MilkfatsnfPage implements OnInit {
     }
 
     console.log(this.no,this.fat,this.snf,this.amount);
-    const farmer=this.farmers.find(o=>o.no==this.no);
+    const farmer=this.farmers.find(o=>o.no==this.no && o.center_id==this.center_id);
     if(farmer==undefined){
-      alert("Farmer With farmer no doesnot exists");
+      alert("Farmer With farmer no doesnot exists for this collection center");
       document.getElementById('no').focus();
       return;
     }
